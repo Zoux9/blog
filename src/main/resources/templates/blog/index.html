@@ -1,0 +1,150 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="blog/header::head-fragment"></head>
+<body>
+<!--top begin-->
+  <header th:replace="blog/header::header-fragment"></header>
+<!--top end-->
+  <article>
+    <!--lbox begin-->
+    <div class="lbox">
+      <!--banbox begin-->
+      <div class="banbox">
+        <div class="banner">
+          <div id="banner" class="fader">
+            <li class="slide" th:each="carousel : ${blogCarousel}"><a th:href="@{/blog/{id}(id=${carousel.id})}" target="_blank"><img th:src="${carousel.firstPicture}"></a></li>
+            <div class="fader_controls">
+              <div class="page prev" data-target="prev"></div>
+              <div class="page next" data-target="next"></div>
+              <ul class="pager_list">
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--banbox end-->
+      <!--headline begin-->
+      <div class="headline">
+        <ul>
+          <li th:each="ranking,rankingStat : ${session.viewsRanking}"  th:if="${rankingStat.index} lt 2"><a th:href="@{/blog/{id}(id=${ranking.id})}" th:title="${ranking.title}"><img th:src="@{${ranking.firstPicture}}"><span>[[${ranking.title}]]</span></a></li>
+        </ul>
+      </div>
+      <!--headline end-->
+      <div class="clearblank"></div>
+      <div class="tab_box whitebg">
+        <div class="tab_buttons">
+          <ul>
+            <li onclick="refresh(value)" th:value="*{type.id}"  th:each="type,typeStatus : ${session.types}" name="typeId" th:class="${typeStatus.first} ? 'newscurrent' " >[[${type.name}]]</li>
+          </ul>
+        </div>
+        <div class="newstab" th:fragment="typeSearch" th:id="id_typeSearch">
+          <div th:if="${typeBlog}">
+            <div class="newsitem" >
+              <div class="newspic">
+                <ul>
+                  <li th:each="blog, blogStart : ${typeBlog}" th:if="${blogStart.index} lt 2"><a th:href="@{/blog/{id}(id=${blog.id})}"><img th:src="${blog.firstPicture}"><span th:text="${blog.title}"></span></a></li>
+                </ul>
+              </div>
+              <ul class="newslist" >
+                <li th:each="blog, blogStart : ${typeBlog}" th:if="${blogStart.index} >= 2"><i></i><a th:href="@{/blog/{id}(id=${blog.id})}">[[${blog.title}]]</a>
+              </ul>
+            </div>
+         </div>
+        </div>
+      </div>
+      <!--tab_box end-->
+      <div class="zhuanti whitebg">
+        <h2 class="htitle">文章推荐</h2>
+        <ul>
+          <li th:each="recommend : ${blogRecommend}"> <i class="ztpic"><a th:href="@{/blog/{id}(id=${recommend.id})}" target="_blank"><img th:src="@{${recommend.firstPicture}}"></a></i> <b th:text="${recommend.title}"></b><span th:text="${recommend.description}"></span><a th:href="@{blog/{id}(id=${recommend.id})}" target="_blank" class="readmore">文章阅读</a> </li>
+        </ul>
+      </div>
+      <div class="whitebg bloglist">
+        <h2 class="htitle">最新文章<span class="hnav"><a th:href="@{/list}" target="_blank">更多</a></span></h2>
+        <ul>
+          <!--&lt;!&ndash;多图模式 置顶设计&ndash;&gt;-->
+          <!--<li>-->
+            <!--<h3 class="blogtitle"><a href="/" target="_blank"><b>【顶】</b>别让这些闹心的套路，毁了你的网页设计!</a></h3>-->
+            <!--<span class="bplist"><a href="/"> <img src="..//blog/images/b02.jpg" alt=""></a> <a href="/"><img src="..//blog/images/b03.jpg" alt=""></a> <a href="/"><img src="..//blog/images/b04.jpg" alt=""> </a><a href="/"><img src="..//blog/images/b05.jpg" alt=""> </a></span>-->
+            <!--<p class="blogtext">如图，要实现上图效果，我采用如下方法：1、首先在数据库模型，增加字段，分别是图片2，图片3。2、增加标签模板，用if，else if 来判断，输出。思路已打开，样式调用就可以多样化啦！... </p>-->
+            <!--<p class="bloginfo"><i class="avatar"><img src="..//blog/images/avatar.jpg"></i><span>杨青青</span><span>2018-10-28</span><span>【<a href="/">原创模板</a>】</span></p>-->
+          <!--</li>-->
+          <!--单图-->
+          <li th:each="blog : ${blogs.list}">
+            <a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank"><h3 class="blogtitle">[[${blog.title}]]</h3></a>
+            <span class="blogpic imgscale"><i><a href="/" th:text="${blog.flag}"></a></i><a th:href="@{/blog/{id}(id=${blog.id})}" title=""><img th:src="@{${blog.firstPicture}}" alt=""></a></span>
+            <p class="blogtext" th:text="${blog.description}"></p>
+            <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.createTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}" ></a>】</span></p>
+            <a th:href="@{/blog/{id}(id=${blog.id})}" class="viewmore">阅读更多</a> </li>
+        </ul>
+      </div>
+      <div class="pagelist">
+        <a title="Total record">&nbsp;<b>[[${blogs.total}]]</b></a>&nbsp;&nbsp;&nbsp;
+        <a th:href="@{/index/(pageNum=${blogs.prePage})}" th:if="${blogs.hasPreviousPage}" >上一页</a>&nbsp;
+        <b th:text="${blogs.pageNum}"><a th:href="@{/index/(pageNum=${blogs.nextPage})}" ></a></b>&nbsp;
+        <a th:href="@{/index/(pageNum=${blogs.pageNum + 1})}" th:if="${blogs.hasNextPage}" >[[${blogs.pageNum + 1}]]</a>&nbsp;
+        <a th:href="@{/index/(pageNum=${blogs.nextPage})}" th:unless="${blogs.isLastPage}">下一页</a>
+        <a th:href="@{/index/(pageNum=${blogs.pages})}" th:unless="${blogs.isLastPage}" >尾页</a>&nbsp;
+      </div>
+      <!--bloglist end-->
+    </div>
+    <div class="rbox">
+      <div class="card">
+        <h2>我的名片</h2>
+        <p>网名：zealously</p>
+        <p>职业：学生</p>
+        <p>现居：黑龙江省-哈尔滨市</p>
+        <p>Email：1532239199@qq.com</p>
+        <ul class="linkmore">
+          <li><a th:href="@{/about}" target="_blank" class="iconfont icon-zhuye" title="关于我"></a></li>
+          <li><a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=1532239199@qq.com" target="_blank" class="iconfont icon-youxiang" title="我的邮箱"></a></li>
+          <li><a href="http://wpa.qq.com/msgrd?v=3&uin=1532239199&site=qq&menu=yes" target="_blank" class="iconfont icon---" title="QQ联系我"></a></li>
+          <li id="github"><a href="https://github.com/Zoux9" target="_blank" class="iconfont icon-github" title="GitHub"></a></li>
+        </ul>
+      </div>
+      <div th:replace="blog/sider::sider-fragment"></div>
+      <div class="whitebg tongji">
+        <h2 class="htitle">站点信息</h2>
+        <ul>
+          <li><b>建站时间</b>：2020-07-11</li>
+          <li><b>文章统计</b>：[[${blogs.total + ' 条'}]]</li>
+          <li><b>分类统计</b>：[[${#arrays.length(session.types) + ' 条'}]]</li>
+          <li><b>标签统计</b>：[[${#arrays.length(session.tags) + ' 条'}]]</li>
+          <li><b>文章评论</b>：未开通</li>
+          <li><b>开源地址</b>：<a href="https://github.com/Zoux9">GitHub</a></li>
+
+          <!--<img th:src="@{/blog/images/wxgzh.jpg}" class="tongji_gzh">-->
+        </ul>
+      </div>
+      <div class="links whitebg">
+        <h2 class="htitle"><span class="sqlink"><a th:href="@{/link}">申请链接</a></span>友情链接</h2>
+        <ul>
+          <!--<li><a href="#" target="_blank"></a></li>-->
+        </ul>
+      </div>
+    </div>
+  </article>
+  <!--页脚-->
+  <footer th:replace="blog/footer::footer-fragment"></footer>
+    <script th:src="@{/blog/js/jquery-1.8.3.min.js}"></script>
+    <script th:src="@{/blog/js/comm.js}"></script>
+    <script th:src="@{/blog/js/modernizr.js}"></script>
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            var typeId = $("[name='typeId']").val()
+            refresh(typeId)
+        });
+        function refresh(typeId) {
+            let url = '/searchType/' + typeId;
+            $.ajax({
+                url: url,
+                type: 'get',
+                success: function (data) {
+                    $('#id_typeSearch').html(data);
+                }
+            })
+        }
+    </script>
+
+  </body>
+</html>

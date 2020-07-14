@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zx.blog.dao.UserMapper">
+    <sql id="User_Field">t_user.id,t_user.nickname,t_user.username,t_user.password,t_user.email,t_user.avatar,t_user.type,t_user.create_time,t_user.update_time</sql>
+    <select id="getUserByName" resultType="User">
+      select <include refid="User_Field" /> from t_user where t_user.username = #{usernmae};
+    </select>
+
+    <select id="getUserById" parameterType="Long" resultType="User">
+        select <include refid="User_Field" /> from t_user where t_user.id = #{id};
+    </select>
+
+
+    <select id="userCount" resultType="Integer">
+        select count(id) from t_user
+    </select>
+
+    <resultMap id="SevenDays" type="com.zx.blog.vo.SevenDays">
+        <result property="clickDate" column="click_date"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <select id="findSevenDaysUser" resultMap="SevenDays">
+        select a.click_date,ifnull(b.count,0) as count
+        from (
+            SELECT curdate() as click_date
+            union all
+            SELECT date_sub(curdate(), interval 1 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 2 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 3 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 4 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 5 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 6 day) as click_date
+        ) a left join (
+          select date(create_time) as datetime, count(id) as count
+          from t_user
+          group by date(create_time)
+        ) b  on a.click_date = b.datetime;
+    </select>
+</mapper>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>新增文档 - zealously后台管理系统</title>
+    <link rel="icon" href="favicon.ico" type="image/ico">
+    <meta name="keywords" content="blog" />
+    <meta name="description" content="blog" />
+    <link th:href="@{/admin/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/materialdesignicons.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/style.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/lib/editormd/css/editormd.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/select2.css}" rel="stylesheet"/>
+</head>
+
+<body>
+<div class="container-fluid p-t-15">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <form th:action="@{/admin/blog/add}" method="post" id="blog-form" class="row">
+                        <input type="hidden" th:text="${blog.userId}">
+                        <input type="hidden" name="published">
+                        <div class="form-group col-md-12">
+                            <label for="type">来源</label>
+                            <div class="form-controls">
+                                <select name="flag" class="form-control">
+                                    <option value="" disabled selected hidden>请选择来源</option>
+                                    <option>原创</option>
+                                    <option>转载</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="type">分类</label>
+                            <div class="form-controls">
+                                <select name="typeId" class="form-control" id="type">
+                                    <option value="" disabled selected hidden>请选择分类</option>
+                                    <option th:each="type : ${types}" th:value="${type.id}" name="typeId"
+                                            th:text="${type.name}"></option>
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="title">标题</label>
+                            <input type="text" class="form-control" id="title" name="title" value=""
+                                   placeholder="请输入标题"/>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label>首图</label>
+                            <div class="form-controls">
+                                <input type="text" class="form-control" name="firstPicture" placeholder="首图引用地址"/>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="content">内容</label>
+                            <div id="md-editorm" style="z-index: 1 !important;">
+                                <textarea name="content" style="display:none;"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <label>标签</label>
+                            <div class="form-controls">
+                                <select class="col-xs-12 tags" name="tagIds" multiple>
+                                        
+                                    <option th:each="tag : ${tags}" th:value="*{tag.id}" th:field="${blog.tagIds}"
+                                            th:text="${tag.name}" name="tagIds"></option>
+                                           
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12" for="example-textarea-input">文章内容简介</label>
+                            <div class="col-xs-12">
+                                <textarea class="form-control" id="example-textarea-input" name="description" rows="6"
+                                          placeholder="请输入内容简介.."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <div class="clearfix">
+                                <label class="lyear-checkbox checkbox-danger m-t-10">
+                                    <input type="checkbox" checked="" name="notice"><span>公告</span>
+                                </label>
+                                <label class="lyear-checkbox checkbox-primary m-t-10">
+                                    <input type="checkbox" checked="" name="carousel"><span>首页轮播</span>
+                                </label>
+                                <label class="lyear-checkbox checkbox-success m-t-10">
+                                    <input type="checkbox" checked="" name="recommend"><span>推 荐</span>
+                                </label>
+                                <label class="lyear-checkbox checkbox-purple m-t-10">
+                                    <input type="checkbox" checked="" name="appreciation"><span>赞 赏</span>
+                                </label>
+                                <label class="lyear-checkbox checkbox-dark m-t-10">
+                                    <input type="checkbox" checked="" name="shareStatement"><span>转 载 声 明</span>
+                                </label>
+                                <label class="lyear-checkbox checkbox-pink m-t-10">
+                                    <input type="checkbox" checked="" name="comment"><span>评 论</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-12">
+                            <button type="button" id="submit-btn" class="btn btn-primary ajax-post"
+                                    target-form="add-form">发 布
+                            </button>
+                            <button type="button" id="save-btn" class="btn btn-primary ajax-post"
+                                    target-form="add-form">保 存
+                            </button>
+                            <button type="button" class="btn btn-default"
+                                    onclick="javascript:history.back(-1);return false;">返 回
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
+<!--标签插件-->
+<!--<script th:src="@{/admin/js/jquery-tags-input/jquery.tagsinput.min.js}"></script>-->
+<script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
+<script th:src="@{/admin/lib/editormd/editormd.min.js}"></script>
+<script th:src="@{/admin/js/select2.min.js}"></script>
+<script type="text/javascript">
+    var editor;
+
+    $(function () {
+        editor = editormd("md-editorm", {
+            width: "100%",
+            height: 500,
+            syncScrolling: "single",
+            path: "/admin/lib/editormd/lib/",
+            imageUpload : true,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "/admin/imageUpload",
+        });
+    });
+
+    $('.tags').select2();
+
+    // 保存
+    $('#save-btn').click(function () {
+        $('[name = "published"]').val(false);
+        $('#blog-form').submit();
+    })
+
+    // 发布
+    $('#submit-btn').click(function () {
+        $('[name = "published"]').val(true);
+        $('#blog-form').submit()
+    })
+</script>
+</body>
+</html>

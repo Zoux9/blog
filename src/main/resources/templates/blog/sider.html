@@ -1,0 +1,30 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="blog/header::head-fragment"></head>
+<body>
+
+    <div th:fragment="sider-fragment">
+      <div class="whitebg notice">
+        <h2 class="htitle">网站公告</h2>
+        <ul>
+          <li th:each="notice : ${session.blogNotice}"><a th:href="@{/blog/{id}(id=${notice.id})}">[[${notice.title}]]</a></li>
+
+        </ul>
+      </div>
+      <div class="whitebg paihang">
+        <h2 class="htitle">点击排行</h2>
+        <ul>
+          <li th:each="ranking : ${session.viewsRanking}"><i></i><a th:href="@{/blog/{id}(id=${ranking.id})}">[[${ranking.title}]]</a></li>
+        </ul>
+      </div>
+
+      <div class="whitebg cloud">
+        <h2 class="htitle">标签云</h2>
+        <ul>
+          <a th:href="@{/tag/{tagId}(tagId=${tag.id})}" target="_blank" th:each="tag : ${session.tags}" >[[${tag.name}]]</a>
+        </ul>
+      </div>
+
+    </div>
+  </body>
+</html>

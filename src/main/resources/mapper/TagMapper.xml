@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zx.blog.dao.TagMapper">
+    <select id="getListTag" resultType="Tag">
+        select t_tag.id,t_tag.name,t_tag.state from t_tag
+    </select>
+
+    <select id="getByTagId" parameterType="Long" resultType="Tag">
+        select t_tag.id,t_tag.name,t_tag.state from t_tag where id = #{id}
+    </select>
+
+    <select id="getTagByName" parameterType="string" resultType="Tag">
+        select t_tag.id,t_tag.name,t_tag.state from t_tag where name = #{name}
+    </select>
+
+    <insert id="saveTag" parameterType="com.zx.blog.entity.Tag">
+      INSERT INTO t_tag(t_tag.id,t_tag.name,t_tag.state) VALUES(#{id},#{name},#{state})
+    </insert>
+
+    <delete id="deleteTag" parameterType="Long">
+      delete from t_tag where id = #{id}
+    </delete>
+
+    <update id="updateTag" parameterType="com.zx.blog.entity.Tag">
+        <if test="id != null">
+            update t_tag
+            <set>
+                <if test="name != null and name != ''">
+                    name = #{name},
+                </if>
+                <if test="name != null and name != ''">
+                    state = #{state}
+                </if>
+            </set>
+            where id = #{id}
+        </if>
+
+    </update>
+
+    <select id="tagCount" resultType="Integer">
+        select count(id) from t_tag
+    </select>
+</mapper>

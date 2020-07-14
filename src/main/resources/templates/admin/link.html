@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/header::head-fragment"></head>
+
+<body>
+<div class="container-fluid p-t-15">
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-toolbar clearfix">
+          <div class="toolbar-btn-action">
+            <a class="btn btn-primary m-r-5" th:href="@{/admin/addLink}"><i class="mdi mdi-plus"></i> 新增</a>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div th:unless="${#strings.isEmpty(message)}">
+            <div class="alert alert-danger alert-dismissible" role="alert" th:if="${message == false}">
+               <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+               <strong>操作提示: </strong><span th:text="${message}"></span>
+            </div>
+             <div class="alert alert-success alert-dismissible" role="alert" th:if="${success == true}">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>操作提示: </strong> <span th:text="${message}"></span>
+             </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>
+                    <label class="lyear-checkbox checkbox-primary">
+                      <input type="checkbox" id="check-all"><span></span>
+                    </label>
+                  </th>
+                  <th>编号</th>
+                  <th>友链名称</th>
+                  <th>链接</th>
+                  <th>排序</th>
+                  <th>申请时间</th>
+                  <th>更新时间</th>
+                  <th>审核</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr th:each="link : ${adminLinks}" >
+                <td>
+                  <label class="lyear-checkbox checkbox-primary">
+                    <input type="checkbox" name="ids[]" value="1"><span></span>
+                  </label>
+                </td>
+                <td th:text="${link.id}"></td>
+                <td th:text="${link.linkName}"></td>
+                <td th:text="${link.linkUrl}"></td>
+                <td th:text="${link.linkRank}"></td>
+                <td th:text="${#dates.format(link.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${#dates.format(link.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:switch="${link.isDeleted}">
+                  <font th:case="true" class="text-success">已审核</font>
+                  <font th:case="false" class="text-danger">待审核</font>
+                </td>
+                <td>
+                  <div class="btn-group">
+                    <a class="btn btn-xs btn-default" th:href="@{/admin/link/update/{id}(id=${link.id})}" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
+                    <a class="btn btn-xs btn-default"  title="删除" data-toggle="tooltip"><i class="mdi mdi-window-close"></i></a>
+                  </div>
+                </td>
+              </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
+<script type="text/javascript">
+$(function(){
+    $('.search-bar .dropdown-menu a').click(function() {
+        var field = $(this).data('field') || '';
+        $('#search-field').val(field);
+        $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+    });
+});
+</script>
+</body>
+</html>

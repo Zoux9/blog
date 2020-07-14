@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>文档列表 - zealously后台管理系统</title>
+<link rel="icon" href="images/favicon.ico" type="image/ico">
+<meta name="keywords" content="blog" />
+<meta name="description" content="blog" />
+<link th:href="@{/admin/css/bootstrap.min.css}" rel="stylesheet">
+<link th:href="@{/admin/css/materialdesignicons.min.css}" rel="stylesheet">
+<link th:href="@{/admin/css/style.min.css}" rel="stylesheet">
+</head>
+  
+<body>
+<div class="container-fluid p-t-15">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-toolbar clearfix">
+          <form class="form-inline" th:action="@{/admin/blogs/search}" method="post">
+            <div class="form-group">
+              <input class="form-control" type="text" id="example-if-email" name="title" placeholder="请输入标题..">
+            </div>
+            <div class="form-group">
+              <div class="col-xs-12">
+                <select name="typeId" class="form-control" id="example-select" size="1" style="height: 38px" >
+                  <option value="" disabled selected hidden>请选择分类</option>
+                  <option th:each="type : ${types}" th:value="${type.id}" th:text="${type.name}"></option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="lyear-checkbox checkbox-primary m-t-10" style="margin-bottom: 10px">
+                <input type="checkbox" name="recommend" value="1"><span> 推 荐 &nbsp;&nbsp;</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-info" id="search-btn" ><i class=""></i> 搜 索</button>
+            </div>
+            <div class="pull-right toolbar-btn-action">
+              <a class="btn btn-primary m-r-5" th:href="@{/admin/blog/add}"><i class="mdi mdi-plus"></i> 新增</a>
+            </div>
+          </form>
+        </div>
+        <div class="card-body">
+          <div th:unless="${#strings.isEmpty(message)}">
+            <div class="alert alert-danger alert-dismissible" role="alert" th:if="${success == false}">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>操作提示: </strong><span th:text="${message}"></span>
+            </div>
+            <div class="alert alert-success alert-dismissible" role="alert" th:if="${success == true}">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>操作提示: </strong> <span th:text="${message}"></span>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <div id="table-container">
+              <table class="table table-bordered" th:fragment="blogList">
+              <thead>
+              <tr>
+                <th>
+                  <label class="lyear-checkbox checkbox-primary">
+                    <input type="checkbox" id="check-all"><span></span>
+                  </label>
+                </th>
+                <th>编号</th>
+                <th>标题</th>
+                <th>类型</th>
+                <th>推荐</th>
+                <th>更新时间</th>
+                <th>阅读量</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="blog : ${blogPage.list}" >
+                <td>
+                  <label class="lyear-checkbox checkbox-primary">
+                    <input type="checkbox" name="ids[]" value="1"><span></span>
+                  </label>
+                </td>
+                <td th:text="${blog.id}"></td>
+                <td th:text="${blog.title}"></td>
+                <td th:text="${blog.type.name}"></td>
+                <td th:text="${blog.recommend ? '是':'否'}"></td>
+                <td th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${blog.views}"></td>
+                <td th:switch="${blog.published}">
+                  <font th:case="true" class="text-success">发布</font>
+                  <font th:case="false" class="text-danger">保存</font>
+                </td>
+                <td>
+                  <div class="btn-group">
+                    <a class="btn btn-xs btn-default" th:href="@{/admin/blog/update/{id}(id=${blog.id})}" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>
+                    <a class="btn btn-xs btn-default" th:href="@{/admin/blog/delete/{id}(id=${blog.id})}" title="删除" data-toggle="tooltip"><i class="mdi mdi-window-close"></i></a>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            </div>
+          </div>
+          <ul class="pagination">
+            <li ><a th:href="@{/admin/blogs(pageNum=${blogPage.prePage})}" th:unless="${blogPage.isFirstPage}">«</a></li>
+            <li class="active"><a href="#1"><span th:text="${blogPage.pageNum}"></span></a></li>
+            <li th:if="${blogPage.nextPage}"><a th:href="@{/admin/blogs(pageNum=${blogPage.nextPage})}"><span th:text="${blogPage.nextPage}"></span></a></li>
+            <li class="disabled" th:if="${blogPage.hasNextPage}"><span>...</span></li>
+            <li><span>总页数: <a th:text="${blogPage.pages}"></a></span></li>
+            <li><a th:href="@{/admin/blogs(pageNum=${blogPage.nextPage})}" th:unless="${blogPage.isLastPage}">»</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  
+</div>
+
+<script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
+<script type="text/javascript">
+$(function(){
+    $('.search-bar .dropdown-menu a').click(function() {
+        var field = $(this).data('field') || '';
+        $('#search-field').val(field);
+        $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+    });
+});
+
+</script>
+</body>
+</html>

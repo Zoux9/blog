@@ -1,0 +1,48 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>关于我-zealously个人博客</title>
+    <meta name="keywords" content="blog"/>
+    <meta name="description" content="blog"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/blog/css/base.css}" rel="stylesheet">
+    <link th:href="@{/blog/css/m.css}" rel="stylesheet">
+    <script th:src="@{/blog/js/jquery-1.8.3.min.js}"></script>
+    <script th:src="@{/blog/js/comm.js}"></script>
+    <!--[if lt IE 9]>
+    <script th:src="@{/blog/js/modernizr.js}"></script>
+    <![endif]-->
+</head>
+<body>
+<!--top begin-->
+<header th:replace="blog/header::header-fragment"></header>
+<!--top end-->
+<article>
+    <div class="whitebg about">
+        <div class="ab_box"><i class="avatar_pic"><img th:src="@{/blog/images/avatar.jpg}"></i>
+            <h3>zealously</h3>
+            <p>在校学生</p>
+            <p></p>
+        </div>
+        <h2 class="gd_title">关于本站</h2>
+        <p class="ab_dubai">
+        <ul>
+            <li>前端:&nbsp&nbspThymeleaf + 杨青《今夕何夕》静态页面</li>
+            <li>后端:&nbsp&nbspSpringBoot + Mybatis + SpringMVC + Spring Security + MySQL + Redis</li>
+            <li>开源地址：<a href="https://github.com/Zoux9">GitHub</a></li>
+        </ul>
+        </p>
+        <h2 class="gd_title">心路历程</h2>
+        <ul class="xinlu">
+            <li th:each="blog : ${aboutBlog}">
+                <a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank"><i><img th:src="@{${blog.firstPicture}}"></i>
+                    <p th:text="${blog.title}"></p>
+                    <span th:text="${blog.description}"></span></a>
+            </li>
+        </ul>
+    </div>
+</article>
+<footer th:replace="blog/footer::footer-fragment"></footer>
+</body>
+</html>

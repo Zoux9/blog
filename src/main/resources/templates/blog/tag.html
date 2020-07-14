@@ -1,0 +1,65 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>列表页-zealously个人博客</title>
+<meta name="keywords" content="blog" />
+<meta name="description" content="blog" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link th:href="@{/blog/css/base.css}" rel="stylesheet">
+<link th:href="@{/blog/css/m.css}" rel="stylesheet">
+<script th:src="@{/blog/js/jquery-1.8.3.min.js}" ></script>
+<script th:src="@{/blog/js/comm.js}"></script>
+<!--[if lt IE 9]>
+<script th:src="@{/blog/js/modernizr.js}"></script>
+<![endif]-->
+</head>
+<body>
+<header th:replace="blog/header::header-fragment"></header>
+<article> 
+  <!--lbox begin-->
+  <div class="lbox">
+    <div class="whitebg lanmu"> <img src="../../static/blog/images/lm01.jpg">
+      <h1>个人博客日记</h1>
+      <p>个人博客日记，记录一些优秀个人站长是如何制作个人博客，建个人博客、以及经营个人网站的，本站还会推荐一些优秀的个人博客站长网站。</p>
+    </div>
+    <div class="whitebg bloglist">
+      <h2 class="htitle">最新博文</h2>
+      <ul>
+        <!--多图模式 置顶设计-->
+        <!--<li>-->
+          <!--<h3 class="blogtitle"><a href="/" target="_blank"><b>【顶】</b>别让这些闹心的套路，毁了你的网页设计!</a></h3>-->
+          <!--<span class="bplist"><a href="/"> <img src="../../static/blog/images/b02.jpg" alt=""></a> <a href="/"><img src="../../static/blog/images/b03.jpg" alt=""></a> <a href="/"><img src="../../static/blog/images/b04.jpg" alt=""> </a><a href="/"><img src="../../static/blog/images/b05.jpg" alt=""> </a></span>-->
+          <!--<p class="blogtext">如图，要实现上图效果，我采用如下方法：1、首先在数据库模型，增加字段，分别是图片2，图片3。2、增加标签模板，用if，else if 来判断，输出。思路已打开，样式调用就可以多样化啦！... </p>-->
+          <!--<p class="bloginfo"><i class="avatar"><img src="../../static/blog/images/avatar.jpg"></i><span>杨青青</span><span>2018-10-28</span><span>【<a href="/">原创模板</a>】</span></p>-->
+        <!--</li>-->
+        <!--单图-->
+        <li th:each="blog : ${blogList.list}">
+          <a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank"><h3 class="blogtitle">[[${blog.title}]]</h3></a>
+          <span class="blogpic imgscale"><i><a th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.flag}"></a></i><a th:href="@{/blog/{id}(id=${blog.id})}" title=""><img th:src="@{${blog.firstPicture}}" alt=""></a></span>
+          <p class="blogtext" th:text="${blog.description}"></p>
+          <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}" ></a>】</span></p>
+          <a th:href="@{/blog/{id}(id=${blog.id})}" class="viewmore">阅读更多</a>
+        </li>
+      </ul>
+      <!--pagelist-->
+      <div class="pagelist">
+        <a title="Total record">&nbsp;<b>[[${blogList.total}]]</b></a>&nbsp;&nbsp;&nbsp;
+        <a th:href="@{/tag/{tagId}(tagId=${tagId},pageNum=${blogList.prePage})}" th:if="${blogList.hasPreviousPage}" >上一页</a>&nbsp;
+        <b th:text="${blogList.pageNum}"><a th:href="@{/tag/{tagId}(tagId=${tagId},pageNum=${blogList.nextPage})}" ></a></b>&nbsp;
+        <a th:href="@{/tag/{tagId}(tagId=${tagId},pageNum=${blogList.pageNum + 1})}" th:if="${blogList.hasNextPage}" >[[${blogList.pageNum + 1}]]</a>&nbsp;
+        <a th:href="@{/tag/{tagId}(tagId=${tagId},pageNum=${blogList.nextPage})}" th:unless="${blogList.isLastPage}">下一页</a>
+        <a th:href="@{/tag/{tagId}(tagId=${tagId},pageNum=${blogList.pages})}" th:unless="${blogList.isLastPage}" >尾页</a>&nbsp;
+      </div>
+      <!--pagelist end-->
+    </div>
+    
+    <!--bloglist end--> 
+  </div>
+  <div class="rbox">
+    <div th:replace="blog/sider::sider-fragment"></div>
+  </div>
+</article>
+<footer th:replace="blog/footer::footer-fragment"></footer>
+</body>
+</html>

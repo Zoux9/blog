@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zx.blog.dao.BlogMapper">
+
+    <resultMap id="adminBlog" type="blog">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="recommend" column="recommend"/>
+        <result property="typeId" column="type_id"/>
+        <result property="notice" column="notice"/>
+        <result property="carousel" column="carousel"/>
+        <result property="views" column="views"/>
+        <result property="published" column="published"/>
+        <association property="type" javaType="Type">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="BlogInfo" type="blog">
+        <id property="id" column="id"/>
+        <result property="firstPicture" column="first_picture"/>
+        <result property="flag" column="flag"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="views" column="views"/>
+        <result property="notice" column="notice"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="carousel" column="carousel"/>
+        <result property="comment" column="comment"/>
+        <result property="shareStatement" column="share_statement"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="recommend" column="recommend"/>
+        <result property="published" column="published"/>
+        <result property="description" column="description"/>
+        <result property="tagIds" column="tag_ids"/>
+        <result property="typeId" column="type_id"/>
+        <association property="user" javaType="User">
+            <result property="nickname" column="nickname"/>
+            <result property="avatar" column="avatar"/>
+        </association>
+        <association property="type" javaType="Type">
+            <id property="id" column="tid"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+
+    <select id="adminBlogInfo" parameterType="Blog" resultMap="adminBlog">
+        select
+        b.id,b.title,b.update_time,b.published,b.recommend,b.views,b.type_id,t.id,t.name
+        from
+        t_blog b
+        left join
+        t_type t on
+        b.type_id = t.id order by b.update_time desc
+    </select>
+
+    <select id="searchBlog" parameterType="Blog" resultMap="adminBlog">
+        select
+        b.id,b.title,b.update_time,b.published,b.recommend,b.views,b.type_id,t.id,t.name
+        from
+        t_blog b , t_type t
+        <where>
+            <if test="1 == 1">
+                b.type_id = t.id
+            </if>
+            <if test="typeId != null and typeId != ''">
+                and b.type_id = #{typeId}
+            </if>
+            <if test="recommend != null and recommend != ''">
+                and b.recommend = #{recommend}
+            </if>
+            <if test="title != null and title != ''">
+                and b.title like "%"#{title}"%"
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getBlogById" parameterType="Long" resultMap="BlogInfo">
+        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,b.recommend,b.published,b.tag_ids,b.notice,b.carousel,u.nickname,u.avatar,t.id tid ,t.name  from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
+        and b.id = #{id}
+    </select>
+
+
+    <select id="getAbout" resultMap="BlogInfo">
+        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,u.nickname,u.avatar,t.id tid ,t.name from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
+        and b.id = b.id order by b.update_time desc limit 8
+    </select>
+
+    <select id="getListBlog" resultMap="BlogInfo">
+        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.create_time,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,u.nickname,u.avatar,t.id tid ,t.name from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
+        and b.id = b.id and b.published = 1 order by b.create_time desc
+    </select>
+
+    <select id="getBlogByTagId" resultMap="BlogInfo">
+        select b.id,b.title,b.first_picture,b.flag,b.views,b.update_time,b.description, t.id,t.name,
+        u.nickname, u.avatar
+        from t_blog b, t_type t,t_blog_tags tb ,t_user u,t_tag tt
+        where b.type_id = t.id and u.id = b.user_id and tb.blog_id = b.id  and tb.tag_id = tt.id and tb.tag_id = #{tagId} order by b.update_time desc
+    </select>
+
+    <select id="getBlogByTypeId" resultMap="BlogInfo">
+        select b.id,b.title,b.flag,b.first_picture, b.views,b.update_time,b.description,
+        t.id,t.name,
+        u.nickname, u.avatar
+        from t_blog b, t_type t,t_user u
+        where b.type_id = t.id and u.id = b.user_id and b.type_id = #{typeId} order by b.update_time desc
+    </select>
+
+    <select id="searchTitleAndContent" resultMap="BlogInfo">
+        select b.id,b.first_picture,b.title,b.views,b.update_time,b.description,u.nickname,u.avatar,t.id tid ,t.name from t_blog b, t_user u, t_type t
+        where b.user_id = u.id and b.type_id = t.id and (b.title like "%"#{keyboard}"%" or b.content like "%"#{keyboard}"%")
+        order by b.update_time desc
+    </select>
+
+    <select id="getBlogNotice" resultMap="BlogInfo">
+      select b.id,b.title from t_blog b where b.notice = 1 order by update_time desc
+    </select>
+
+    <select id="getCarousel" resultMap="BlogInfo">
+      select b.id ,b.first_picture,b.title from t_blog b where b.carousel = 1 order by b.views desc limit 4
+    </select>
+
+    <select id="getViewsRanking" resultMap="BlogInfo">
+        select b.id ,b.first_picture,b.title from t_blog b order by b.views desc limit 8
+    </select>
+
+    <select id="getRecommend" resultMap="BlogInfo">
+        select b.id ,b.first_picture,b.title, b.description from t_blog b where recommend = 1 order by b.update_time desc limit 6
+    </select>
+
+    <insert id="save" useGeneratedKeys="true" parameterType="Blog">
+        insert into t_blog (id,title, content, first_picture, flag,
+        views, appreciation, share_statement, comment,published,
+        recommend,notice,carousel,create_time, update_time, type_id,tag_ids, user_id, description)
+        values (#{id},#{title},#{content},#{firstPicture},#{flag},#{views},#{appreciation},
+        #{shareStatement},#{comment},#{published},#{recommend},#{notice},#{carousel},#{createTime},
+        #{updateTime},#{typeId},#{tagIds},#{userId},#{description})
+        <selectKey keyProperty="id" resultType="Long" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <update id="updateBlog" parameterType="Blog">
+        update t_blog set
+        published = #{published},
+        flag = #{flag} ,
+        title = #{title},
+        content = #{content},
+        <if test="typeId != null and typeId != ''">
+            type_id = #{typeId},
+        </if>
+        <if test="tagIds != null and tagIds != ''">
+            tag_ids = #{tagIds},
+        </if>
+        views = #{views},
+        first_picture = #{firstPicture},
+        description = #{description},
+        notice = #{notice},
+        carousel = #{carousel},
+        recommend = #{recommend},
+        share_statement = #{shareStatement},
+        appreciation = #{appreciation},
+        comment = #{comment},
+        <if test="published != null and published != ''">
+            published = #{published},
+        </if>
+        update_time = #{updateTime} where id = #{id};
+    </update>
+
+    <delete id="deleteBlogAndTag" parameterType="Long">
+      delete from t_blog_tags where blog_id = #{blogId}
+    </delete>
+
+    <insert id="saveBlogAndTag" parameterType="Map">
+        insert into t_blog_tags (tag_id, blog_id) values (#{tagId},#{blogId});
+    </insert>
+
+    <delete id="deleteBlog" parameterType="Long">
+      delete from t_blog where id = #{id}
+    </delete>
+
+    <resultMap id="SevenDays" type="com.zx.blog.vo.SevenDays">
+        <result property="clickDate" column="click_date"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
+    <select id="findSevenDaysBlog" resultMap="SevenDays">
+        select a.click_date,ifnull(b.count,0) as count
+        from (
+            SELECT curdate() as click_date
+            union all
+            SELECT date_sub(curdate(), interval 1 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 2 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 3 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 4 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 5 day) as click_date
+            union all
+            SELECT date_sub(curdate(), interval 6 day) as click_date
+        ) a left join (
+          select date(update_time) as datetime, count(id) as count
+          from t_blog
+          group by date(update_time)
+        ) b on a.click_date = b.datetime;
+    </select>
+
+    <select id="blogCount" resultType="Integer">
+        select count(id) from t_blog
+    </select>
+</mapper>

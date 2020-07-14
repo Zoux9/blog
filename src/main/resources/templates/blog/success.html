@@ -1,0 +1,28 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>关于我-zealously个人博客</title>
+<meta name="keywords" content="blog" />
+<meta name="description" content="blog" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link th:href="@{/blog/css/base.css}" rel="stylesheet">
+<link th:href="@{/blog/css/m.css}" rel="stylesheet">
+<script th:src="@{/blog/js/jquery-1.8.3.min.js}" ></script>
+<script th:src="@{/blog/js/comm.js}"></script>
+<!--[if lt IE 9]>
+<script th:src="@{/blog/js/modernizr.js}"></script>
+<![endif]-->
+</head>
+<body>
+<!--top begin-->
+<header th:replace="blog/header::header-fragment"></header>
+<!--top end-->
+<article>
+  <div class="whitebg about">
+    <h2 class="gd_title">提交成功</h2>
+  </div>
+</article>
+<footer th:replace="blog/footer::footer-fragment"></footer>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zx.blog.dao.LinkMapper">
+
+    <resultMap id="Link" type="Link">
+        <id property="id" column="id"/>
+        <result property="linkName" column="link_name"/>
+        <result property="linkUrl" column="link_url"/>
+        <result property="linkRank" column="link_rank"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDeleted" column="is_deleted"/>
+    </resultMap>
+
+
+    <select id="getListLink" resultMap="Link">
+       select id,link_name,link_url,link_rank,create_time,update_time,is_deleted from t_link
+    </select>
+
+    <select id="getLinkById"  resultMap="Link">
+       select id,link_name,link_url,link_rank,create_time,update_time,is_deleted from t_link where id = #{id}
+    </select>
+
+    <select id="getShowLink" resultType="Link">
+        select id,link_name,link_url,link_rank,create_time,update_time,is_deleted from t_link where is_deleted = 1
+        order by link_rank desc
+    </select>
+
+    <insert id="applyLink" parameterType="LinK">
+        insert into t_link (link_name,link_url,link_rank,create_time,update_time,is_deleted)
+        values (#{linkName},#{linkUrl},#{linkRank},#{createTime},#{updateTime},#{isDeleted})
+    </insert>
+
+    <update id="updateLink" parameterType="Link">
+        update t_link set
+        <if test="linkName != null and linkName != ''">
+            link_name = #{linkName},
+        </if>
+        <if test="linkUrl != null and linkUrl != ''">
+            link_url = #{linkUrl},
+        </if>
+        <if test="linkRank != null and linkRank != ''">
+            link_rank = #{linkRank},
+        </if>
+        <if test="updateTime != null">
+            update_time = #{updateTime},
+        </if>
+        <if test="isDeleted != null">
+            is_deleted = #{isDeleted}
+        </if>
+        where id = #{id};
+    </update>
+
+</mapper>

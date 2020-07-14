@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <title>日志 - zealously后台管理系统</title>
+    <link rel="icon" th:href="@{/admin/images/favicon.ico}" type="image/ico">
+    <meta name="keywords" content="blog"/>
+    <meta name="description" content="blog"/>
+    <link th:href="@{/admin/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/materialdesignicons.min.css}" rel="stylesheet">
+    <link th:href="@{/admin/css/style.min.css}" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-fluid p-t-15">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>请求用户</th>
+                                <th>操作名称</th>
+                                <th>创建时间</th>
+                                <th>URL</th>
+                                <th>请求类型</th>
+                                <th>请求参数</th>
+                                <th>访问时长</th>
+                                <th>IP地址</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="sysLog : ${sysLogsPage.list}">
+                                <td th:text="${sysLog.id}"></td>
+                                <td th:text="${sysLog.username}"></td>
+                                <td th:text="${sysLog.name}"></td>
+                                <td th:text="${#dates.format(sysLog.createTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                                <td th:text="${sysLog.requestUrl}"></td>
+                                <td th:text="${sysLog.requestType}"></td>
+                                <td th:text="${sysLog.requestParam}"></td>
+                                <td th:text="${sysLog.costTime}"></td>
+                                <td th:text="${sysLog.ip}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ul class="pagination">
+                        <li><a th:href="@{/admin/log/(pageNum=${sysLogsPage.prePage})}"
+                               th:unless="${sysLogsPage.isFirstPage}">«</a></li>
+                        <li class="active"><a href="#1"><span th:text="${sysLogsPage.pageNum}"></span></a></li>
+                        <li th:if="${sysLogsPage.nextPage}"><a
+                                th:href="@{/admin/log/(pageNum=${sysLogsPage.nextPage})}"><span
+                                th:text="${sysLogsPage.nextPage}"></span></a></li>
+                        <li class="disabled" th:if="${sysLogsPage.hasNextPage}"><span>...</span></li>
+                        <li><span>总页数: <a th:text="${sysLogsPage.pages}"></a></span></li>
+                        <li><a th:href="@{/admin/log/(pageNum=${sysLogsPage.nextPage})}"
+                               th:unless="${sysLogsPage.isLastPage}">»</a></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.search-bar .dropdown-menu a').click(function () {
+            var field = $(this).data('field') || '';
+            $('#search-field').val(field);
+            $('#search-btn').html($(this).text() + ' <span class="caret"></span>');
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zx.blog.dao.SysLogMapper">
+    <resultMap id="BlogInfo" type="SysLog">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="requestUrl" column="request_url"/>
+        <result property="requestType" column="request_type"/>
+        <result property="requestParam" column="request_param"/>
+        <result property="username" column="create_time"/>
+        <result property="requestUrl" column="request_url"/>
+        <result property="ip" column="ip"/>
+        <result property="costTime" column="ip"/>
+
+    </resultMap>
+    <select id="findAll" resultMap="BlogInfo">
+        select t_syslog.id,t_syslog.create_by,t_syslog.create_time,t_syslog.update_by,t_syslog.update_time,t_syslog.cost_time,t_syslog.ip,
+       t_syslog.name,t_syslog.request_param,t_syslog.request_type,t_syslog.request_url,t_syslog.username from t_syslog order by t_syslog.update_time desc
+    </select>
+
+    <insert id="save" parameterType="SysLog">
+       insert into t_syslog(t_syslog.create_by,t_syslog.create_time,t_syslog.update_by,t_syslog.update_time,t_syslog.cost_time,t_syslog.ip,
+       t_syslog.name,t_syslog.request_param,t_syslog.request_type,t_syslog.request_url,t_syslog.username)
+       values(#{createBy},#{createTime},#{updateBy},#{updateTime},#{costTime},#{ip},#{name},#{requestParam},#{requestType},#{requestUrl},#{username})
+    </insert>
+
+</mapper>

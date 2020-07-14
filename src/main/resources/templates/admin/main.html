@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="admin/header::head-fragment"></head>
+  
+<body>
+<div class="container-fluid p-t-15">
+  
+  <div class="row">
+    <div class="col-sm-6 col-md-3">
+      <div class="card bg-primary">
+        <div class="card-body clearfix">
+          <div class="pull-right">
+            <p class="h6 text-white m-t-0">文章总数</p>
+            <p class="h3 text-white m-b-0" th:text="${blogCount}"></p>
+          </div>
+          <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-currency-cny fa-1-5x"></i></span> </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="card bg-danger">
+        <div class="card-body clearfix">
+          <div class="pull-right">
+            <p class="h6 text-white m-t-0">用户总数</p>
+            <p class="h3 text-white m-b-0" th:text="${userCount}"></p>
+          </div>
+          <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-account fa-1-5x"></i></span> </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-sm-6 col-md-3">
+      <div class="card bg-success">
+        <div class="card-body clearfix">
+          <div class="pull-right">
+            <p class="h6 text-white m-t-0">分类统计</p>
+            <p class="h3 text-white m-b-0" th:text="${typeCount + ' 条'}"></p>
+          </div>
+          <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-arrow-down-bold fa-1-5x"></i></span> </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-sm-6 col-md-3">
+      <div class="card bg-purple">
+        <div class="card-body clearfix">
+          <div class="pull-right">
+            <p class="h6 text-white m-t-0">标签统计</p>
+            <p class="h3 text-white m-b-0" th:text="${tagCount + ' 条'}"></p>
+          </div>
+          <div class="pull-left"> <span class="img-avatar img-avatar-48 bg-translucent"><i class="mdi mdi-comment-outline fa-1-5x"></i></span> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    
+    <div class="col-md-6"> 
+      <div class="card">
+        <div class="card-header">
+          <h4>最近七天注册用户</h4>
+        </div>
+        <div class="card-body">
+          <canvas class="js-chartjs-bars"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-6"> 
+      <div class="card">
+        <div class="card-header">
+          <h4>最近一周发布文章</h4>
+        </div>
+        <div class="card-body">
+          <canvas class="js-chartjs-lines"></canvas>
+        </div>
+      </div>
+    </div>
+     
+  </div>
+</div>
+
+<script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
+
+<!--图表插件-->
+<script type="text/javascript" src="js/Chart.js"></script>
+<script type="text/javascript">
+  // 最近一周文章
+  let clickDate = [];
+  let blogCount = [];
+  $.ajax({
+      type:"GET",
+      url:"/admin/findSevenDaysBlog",
+      dataType:"json",
+      async:false,
+      success:function (result) {
+          for (let i = result.length - 1; i >= 0; i--){
+              clickDate.push(result[i].clickDate);
+              blogCount.push(result[i].count);
+          }
+
+      },
+      error :function(errorMsg) {//请求成功执行的方法
+          alert("获取最近文章数据失败！");
+      }
+  });
+
+  // 最近七天注册用户
+  let userDate = [];
+  let userCount = [];
+  $.ajax({
+      type:"GET",
+      url:"/admin/findSevenDaysUser",
+      dataType:"json",
+      async:false,
+      success:function (result) {
+          for (let i = result.length - 1; i >= 0; i--){
+              userDate.push(result[i].clickDate.substring(5))
+              userCount.push(result[i].count);
+          }
+
+      },
+      error :function(errorMsg) {//请求成功执行的方法
+          alert("获取最近用户数据失败！");
+      }
+  });
+
+  $(document).ready(function(e) {
+    var $dashChartBarsCnt  = jQuery( '.js-chartjs-bars' )[0].getContext( '2d' ),
+        $dashChartLinesCnt = jQuery( '.js-chartjs-lines' )[0].getContext( '2d' );
+
+    var $dashChartBarsData = {
+		labels: userDate,
+		datasets: [
+			{
+				label: '注册用户',
+                borderWidth: 1,
+                borderColor: 'rgba(0,0,0,0)',
+				backgroundColor: 'rgba(51,202,185,0.5)',
+                hoverBackgroundColor: "rgba(51,202,185,0.7)",
+                hoverBorderColor: "rgba(0,0,0,0)",
+				data: userCount
+			}
+		]
+	};
+    var $dashChartLinesData = {
+		labels: clickDate,
+		datasets: [
+			{
+				label: '文章数量',
+				data: blogCount,
+				borderColor: '#358ed7',
+				backgroundColor: 'rgba(53, 142, 215, 0.175)',
+                borderWidth: 1,
+                fill: false,
+                lineTension: 0.5
+			}
+		]
+	};
+    
+    new Chart($dashChartBarsCnt, {
+        type: 'bar',
+        data: $dashChartBarsData
+    });
+    
+    var myLineChart = new Chart($dashChartLinesCnt, {
+        type: 'line',
+        data: $dashChartLinesData,
+    });
+});
+</script>
+</body>
+</html>

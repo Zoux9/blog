@@ -104,7 +104,7 @@
 
     <select id="getBlogByTypeId" resultMap="BlogInfo">
         select b.id,b.title,b.flag,b.first_picture, b.views,b.update_time,b.description,
-        t.id,t.name,
+        t.id tid,t.name,
         u.nickname, u.avatar
         from t_blog b, t_type t,t_user u
         where b.type_id = t.id and u.id = b.user_id and b.type_id = #{typeId} order by b.update_time desc

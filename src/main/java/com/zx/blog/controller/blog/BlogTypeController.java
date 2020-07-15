@@ -3,6 +3,7 @@ package com.zx.blog.controller.blog;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zx.blog.entity.Blog;
+import com.zx.blog.entity.Type;
 import com.zx.blog.service.BlogService;
 import com.zx.blog.service.TagService;
 import com.zx.blog.service.TypeService;

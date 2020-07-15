@@ -74,7 +74,7 @@
             <a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank"><h3 class="blogtitle">[[${blog.title}]]</h3></a>
             <span class="blogpic imgscale"><i><a href="/" th:text="${blog.flag}"></a></i><a th:href="@{/blog/{id}(id=${blog.id})}" title=""><img th:src="@{${blog.firstPicture}}" alt=""></a></span>
             <p class="blogtext" th:text="${blog.description}"></p>
-            <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.createTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}" ></a>】</span></p>
+            <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.createTime,'yyyy-MM-dd')}"></span><span>【<a th:href="@{/type/{typeId}(typeId=${blog.type.id})}" th:text="${blog.type.name}" ></a>】</span></p>
             <a th:href="@{/blog/{id}(id=${blog.id})}" class="viewmore">阅读更多</a> </li>
         </ul>
       </div>
@@ -111,7 +111,7 @@
           <li><b>分类统计</b>：[[${#arrays.length(session.types) + ' 条'}]]</li>
           <li><b>标签统计</b>：[[${#arrays.length(session.tags) + ' 条'}]]</li>
           <li><b>文章评论</b>：未开通</li>
-          <li><b>开源地址</b>：<a href="https://github.com/Zoux9">GitHub</a></li>
+          <li><b>开源地址</b>：<a href="https://github.com/Zoux9/blog">GitHub</a></li>
 
           <!--<img th:src="@{/blog/images/wxgzh.jpg}" class="tongji_gzh">-->
         </ul>
@@ -131,8 +131,8 @@
     <script th:src="@{/blog/js/modernizr.js}"></script>
     <script th:inline="javascript">
         $(document).ready(function(){
-            var typeId = $("[name='typeId']").val()
-            refresh(typeId)
+            var typeId = $("[name='typeId']").val();
+            refresh(typeId);
         });
         function refresh(typeId) {
             let url = '/searchType/' + typeId;
@@ -144,6 +144,7 @@
                 }
             })
         }
+
     </script>
 
   </body>

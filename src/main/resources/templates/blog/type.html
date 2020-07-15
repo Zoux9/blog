@@ -38,7 +38,7 @@
           <a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank"><h3 class="blogtitle">[[${blog.title}]]</h3></a>
           <span class="blogpic imgscale"><i><a th:href="@{/blog/{id}(id=${blog.id})}" th:text="${blog.flag}"></a></i><a th:href="@{/blog/{id}(id=${blog.id})}" title=""><img th:src="@{${blog.firstPicture}}" alt=""></a></span>
           <p class="blogtext" th:text="${blog.description}"></p>
-          <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}" ></a>】</span></p>
+          <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><span>【<a th:href="@{/type/{typeId}(typeId=${blog.type.id})}" th:text="${blog.type.name}" ></a>】</span></p>
           <a th:href="@{/blog/{id}(id=${blog.id})}" class="viewmore">阅读更多</a>
         </li>
       </ul>

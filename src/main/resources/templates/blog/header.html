@@ -3,8 +3,8 @@
 <head th:fragment="head-fragment">
     <meta charset="utf-8">
     <title>首页-zealously个人博客</title>
-    <meta name="keywords" content="blog" />
-    <meta name="description" content="blog" />
+    <meta name="keywords" content="blog"/>
+    <meta name="description" content="blog"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link th:href="@{/blog/css/base.css}" rel="stylesheet">
     <link th:href="@{/blog/css/m.css}" rel="stylesheet">
@@ -12,36 +12,40 @@
 </head>
 
 <body>
-    <div th:fragment="header-fragment">
-        <header id="header">
-            <div class="navbox">
-                <h2 id="mnavh"><span class="navicon"></span></h2>
-                <div class="logo"><a th:href="@{/}">zealously | <font class="font16">每天都是一个崭新的开始</font></a></div>
-                <nav >
-                    <ul id="starlist">
-                        <li><a th:href="@{/}">网站首页</a></li>
-                        <li><a th:href="@{/list}">文章专栏</a></li>
-                        <li class="menu"><a th:href="@{/list}">技术专栏</a>
-                            <ul class="sub">
-                                <li th:each="type : ${session.types}"><a th:href="@{/type/{typeId}(typeId=${type.id})}">[[${type.name}]]</a></li>
-                            </ul>
-                            <span></span></li>
-                        <li><a th:href="@{/time}">时间轴</a></li>
-                        <li><a th:href="@{/about}">关于我</a></li>
-                    </ul>
-                </nav>
-                <div class="searchico"></div>
-            </div>
-        </header>
-        <div class="searchbox">
-            <div class="search">
-                <form th:action="@{/search}" method="get" name="searchform" id="searchform">
-                    <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字词" style="color: rgb(153, 153, 153);" onfocus="if(value=='请输入关键字词'){this.style.color='#000';value=''}" onblur="if(value==''){this.style.color='#999';value='请输入关键字词'}" type="text">
-                    <input  class="input_submit" value="搜索" type="submit">
-                </form>
-            </div>
-            <div class="searchclose"></div>
+<div th:fragment="header-fragment">
+    <header id="header">
+        <div class="navbox">
+            <h2 id="mnavh"><span class="navicon"></span></h2>
+            <div class="logo"><a th:href="@{/}">zealously | <font class="font16">每天都是一个崭新的开始</font></a></div>
+            <nav>
+                <ul id="starlist">
+                    <li><a th:href="@{/}">网站首页</a></li>
+                    <li><a th:href="@{/list}">文章专栏</a></li>
+                    <li class="menu"><a href="#">技术专栏</a>
+                        <ul class="sub">
+                            <li th:each="type : ${session.types}"><a th:href="@{/type/{typeId}(typeId=${type.id})}">[[${type.name}]]</a>
+                            </li>
+                        </ul>
+                        <span></span></li>
+                    <li><a th:href="@{/time}">时间轴</a></li>
+                    <li><a th:href="@{/about}">关于我</a></li>
+                </ul>
+            </nav>
+            <div class="searchico"></div>
         </div>
+    </header>
+    <div class="searchbox">
+        <div class="search">
+            <form th:action="@{/search}" method="get" name="searchform" id="searchform">
+                <input name="keyboard" id="keyboard" class="input_text" value="请输入关键字词"
+                       style="color: rgb(153, 153, 153);"
+                       onfocus="if(value=='请输入关键字词'){this.style.color='#000';value=''}"
+                       onblur="if(value==''){this.style.color='#999';value='请输入关键字词'}" type="text">
+                <input class="input_submit" value="搜索" type="submit">
+            </form>
+        </div>
+        <div class="searchclose"></div>
     </div>
+</div>
 </body>
 </html>

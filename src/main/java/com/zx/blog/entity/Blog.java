@@ -18,6 +18,7 @@ public class Blog implements Serializable {
 	private boolean appreciation;       //是否开启赞赏
 	private boolean shareStatement;     //是否开启版权说明
 	private boolean carousel;           //是否开启首页轮播
+	private boolean headline;           //头条
 	private boolean notice;             //公告
 	private boolean comment;            //是否开启评论
 	private boolean published;          //是否发布文章
@@ -111,6 +112,14 @@ public class Blog implements Serializable {
 
 	public void setCarousel(boolean carousel) {
 		this.carousel = carousel;
+	}
+
+	public boolean isHeadline() {
+		return headline;
+	}
+
+	public void setHeadline(boolean headline) {
+		this.headline = headline;
 	}
 
 	public boolean isNotice() {

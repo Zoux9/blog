@@ -68,6 +68,7 @@
                 <th>标题</th>
                 <th>类型</th>
                 <th>推荐</th>
+                <th>头条</th>
                 <th>更新时间</th>
                 <th>阅读量</th>
                 <th>状态</th>
@@ -85,6 +86,7 @@
                 <td th:text="${blog.title}"></td>
                 <td th:text="${blog.type.name}"></td>
                 <td th:text="${blog.recommend ? '是':'否'}"></td>
+                <td th:text="${blog.headline ? '是':'否'}"></td>
                 <td th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td th:text="${blog.views}"></td>
                 <td th:switch="${blog.published}">

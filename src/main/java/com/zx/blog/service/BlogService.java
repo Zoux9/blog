@@ -1,9 +1,11 @@
 package com.zx.blog.service;
 
+import com.github.pagehelper.PageInfo;
 import com.zx.blog.entity.Blog;
 import com.zx.blog.vo.SevenDays;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zouxu
@@ -15,6 +17,7 @@ public interface BlogService {
 
 	List<Blog> adminBlogInfo();
 
+
 	List<Blog> searchBlog(Blog query);
 
 	int deleteBlog(Long id);
@@ -23,9 +26,15 @@ public interface BlogService {
 
 	Blog getBlogConvert(Long id);
 
-	List<Blog> getListBlog();
+	PageInfo<Blog> getListBlog(int offset, int count);
 
 	List<Blog> getViewsRanking();
+
+	/**
+	 * 首页头条
+	 * @return
+	 */
+	List<Blog> getBlogHeadline();
 
 	List<Blog>  getRecommend();
 
@@ -36,6 +45,8 @@ public interface BlogService {
 	List<Blog> searchTitleAndContent(String keyboard);
 
 	List<Blog> getBlogByTypeId(Long typeId);
+
+	List<Blog> getBlogTime();
 
 	List<Blog> getAbout();
 

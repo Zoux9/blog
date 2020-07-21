@@ -1,34 +1,35 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="utf-8">
-<title>时间轴-zealously个人博客</title>
-<meta name="keywords" content="blog" />
-<meta name="description" content="blog" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link th:href="@{/blog/css/base.css}" rel="stylesheet">
-<link th:href="@{/blog/css/m.css}" rel="stylesheet">
-<script th:src="@{/blog/js/jquery-1.8.3.min.js}" ></script>
-<script th:src="@{/blog/js/comm.js}"></script>
-<script th:src="@{/blog/js/page.js}"></script>
-<!--[if lt IE 9]>
-<script th:src="@{/blog/js/modernizr.js}"></script>
-<![endif]-->
+    <meta charset="utf-8">
+    <title>时间轴-zealously个人博客</title>
+    <meta name="keywords" content="blog"/>
+    <meta name="description" content="blog"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/blog/css/base.css}" rel="stylesheet">
+    <link th:href="@{/blog/css/m.css}" rel="stylesheet">
+    <script th:src="@{/blog/js/jquery-1.8.3.min.js}"></script>
+    <script th:src="@{/blog/js/comm.js}"></script>
+    <script th:src="@{/blog/js/page.js}"></script>
+    <!--[if lt IE 9]>
+    <!--<script th:src="@{/blog/js/modernizr.js}"></script>-->
+    <![endif]-->
 </head>
 <body>
 <header th:replace="blog/header::header-fragment"></header>
 <!--top end-->
 <article>
-  <div class="whitebg timebox">
- <h2 class="htitle">往期文章</h2>
-<ul id="list" style="display:none;">
-   <li th:each="blog : ${timeBlog}"><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><i><a th:href="@{/blog/{id}(id=${blog.id})}" target="_blank">[[${blog.title}]]</a></i></li>
-</ul>
- <ul id="list2">
- </ul>
-<div class="clear"></div>
-<script th:src="@{/blog/js/page2.js}"></script>
-  </div>
+    <div class="whitebg timebox">
+        <h2 class="htitle">往期文章</h2>
+        <ul id="list" style="display:none;">
+            <li th:each="blog : ${timeBlog}"><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><i><a
+                    th:href="@{/blog/{id}(id=${blog.id})}" target="_blank">[[${blog.title}]]</a></i></li>
+        </ul>
+        <ul id="list2">
+        </ul>
+        <div class="clear"></div>
+        <script th:src="@{/blog/js/page2.js}"></script>
+    </div>
 </article>
 <!--页脚-->
 <footer th:replace="blog/footer::footer-fragment"></footer>

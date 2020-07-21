@@ -46,21 +46,13 @@ public class AdminIndexController {
 	@ResponseBody
 	@RequestMapping(value = "/findSevenDaysBlog", method = RequestMethod.GET)
 	public List<SevenDays> findSevenDaysBlog(){
-		List<SevenDays> sevenDaysBlog = blogService.findSevenDaysBlog();
-		if (sevenDaysBlog != null){
-			return sevenDaysBlog;
-		}
-		return null;
+		return blogService.findSevenDaysBlog();
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/findSevenDaysUser", method = RequestMethod.GET)
 	public List<SevenDays> findSevenDaysUser(){
-		List<SevenDays> sevenDaysUser = userService.findSevenDaysUser();
-		if (sevenDaysUser != null){
-			return sevenDaysUser;
-		}
-		return null;
+		return userService.findSevenDaysUser();
 	}
 
 }

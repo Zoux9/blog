@@ -26,6 +26,8 @@ public interface BlogMapper {
 
 	Blog getBlogById(Long id);
 
+	List<Blog> getBlogHeadline();
+
 	List<Blog> getListBlog();
 
 	List<Blog> getViewsRanking();

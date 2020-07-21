@@ -26,7 +26,7 @@
       <!--headline begin-->
       <div class="headline">
         <ul>
-          <li th:each="ranking,rankingStat : ${session.viewsRanking}"  th:if="${rankingStat.index} lt 2"><a th:href="@{/blog/{id}(id=${ranking.id})}" th:title="${ranking.title}"><img th:src="@{${ranking.firstPicture}}"><span>[[${ranking.title}]]</span></a></li>
+          <li th:each="blog,strat : ${blogHeadline}"  th:if="${strat.index} lt 2"><a th:href="@{/blog/{id}(id=${blog.id})}" th:title="${blog.title}"><img th:src="@{${blog.firstPicture}}"><span>[[${blog.title}]]</span></a></li>
         </ul>
       </div>
       <!--headline end-->
@@ -76,6 +76,7 @@
             <p class="blogtext" th:text="${blog.description}"></p>
             <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.createTime,'yyyy-MM-dd')}"></span><span>【<a th:href="@{/type/{typeId}(typeId=${blog.type.id})}" th:text="${blog.type.name}" ></a>】</span></p>
             <a th:href="@{/blog/{id}(id=${blog.id})}" class="viewmore">阅读更多</a> </li>
+
         </ul>
       </div>
       <div class="pagelist">
@@ -130,10 +131,11 @@
     <script th:src="@{/blog/js/comm.js}"></script>
     <script th:src="@{/blog/js/modernizr.js}"></script>
     <script th:inline="javascript">
-        $(document).ready(function(){
-            var typeId = $("[name='typeId']").val();
+        $(function(){
+            let typeId = $("[name='typeId']").val();
             refresh(typeId);
         });
+
         function refresh(typeId) {
             let url = '/searchType/' + typeId;
             $.ajax({
@@ -144,7 +146,6 @@
                 }
             })
         }
-
     </script>
 
   </body>

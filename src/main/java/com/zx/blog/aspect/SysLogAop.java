@@ -33,7 +33,7 @@ import java.util.Map;
 @Component
 public class SysLogAop {
 
-	private static final ThreadLocal<Date> beginTimeThreadLocal = new NamedThreadLocal<Date>("ThreadLocal beginTime");
+	private static final ThreadLocal<Date> BEGIN_TIME_THREAD_LOCAL = new NamedThreadLocal<>("ThreadLocal beginTime");
 
 	@Autowired
 	private SysLogService sysLogService;
@@ -66,7 +66,8 @@ public class SysLogAop {
 
 		//线程绑定变量（该数据只有当前请求的线程可见）
 		Date beginTime = new Date();
-		beginTimeThreadLocal.set(beginTime);
+		BEGIN_TIME_THREAD_LOCAL.set(beginTime);
+
 	}
 
 
@@ -104,18 +105,18 @@ public class SysLogAop {
 			log.setUpdateTime(new Date());
 
 			//请求开始时间
-			long beginTime = beginTimeThreadLocal.get().getTime();
+			long beginTime = BEGIN_TIME_THREAD_LOCAL.get().getTime();
 			long endTime = System.currentTimeMillis();
 			//请求耗时
 			Long logElapsedTime = endTime - beginTime;
 			log.setCostTime(logElapsedTime.intValue());
 
 			//持久化(存储到数据或者ES，可以考虑用线程池)
-			//logService.insert(log);
 			ThreadPoolUtil.getPool().execute(new SaveSystemLogThread(log, sysLogService));
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			BEGIN_TIME_THREAD_LOCAL.remove();
 		}
 	}
 

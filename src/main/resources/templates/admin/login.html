@@ -58,6 +58,12 @@
         .login-center .has-feedback.feedback-left.row .form-control-feedback {
             left: 15px;
         }
+
+        #error {
+            animation: color_change 10000ms ease-out infinite alternate;
+            font-size: 15px;
+            color: #f96868;
+        }
     </style>
 </head>
 
@@ -68,7 +74,7 @@
             <div class="login-header text-center">
                 <a href="index.html"> <img alt="light year admin" th:src="@{/admin/images/logo-sidebar.png}"> </a>
             </div>
-            <form th:method="post" th:action="@{/admin/login}">
+            <form id="login" th:method="post" th:action="@{/admin/login}">
                 <div class="form-group has-feedback feedback-left">
                     <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username"/>
                     <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
@@ -82,14 +88,20 @@
                         <input type="text" name="captcha" class="form-control" placeholder="验证码">
                         <span class="mdi mdi-check-all form-control-feedback" aria-hidden="true"></span>
                     </div>
+
                     <div class="col-xs-5">
-                        <img th:src="@{/admin/images/captcha.png}" class="pull-right" id="captcha"
-                             style="cursor: pointer;" onclick="this.src=this.src+'?d='+Math.random();" title="点击刷新"
+                        <img th:src="@{/captcha}" class="pull-right" id="captcha"
+                             style="cursor: pointer;" onclick="verifyCode();" title="点击刷新"
                              alt="captcha">
+                        <input type="hidden" id="cKey" name="cKey">
+
                     </div>
                 </div>
+                <div class="col-sm-12 text-center">
+                    <p id="error"></p>
+                </div>
                 <div class="form-group">
-                    <button class="btn btn-block btn-primary" type="submit">立即登录</button>
+                    <button class="btn btn-block btn-primary" onclick="login()" type="button">立即登录</button>
                 </div>
             </form>
             <hr>
@@ -102,5 +114,34 @@
 <script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
 <script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
 <script type="text/javascript">;</script>
+<script>
+    $(function () {
+        verifyCode();
+    });
+
+    // 获取验证码
+    function verifyCode() {
+        $.get('/captcha', function (res) {
+            $('#cKey').attr('value', res.key);
+            $('#captcha').attr('src', res.image);
+        }, 'json');
+    }
+
+    function login() {
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "/admin/login",
+            data: $('#login').serialize(),
+            success: function (result) {
+                if (result.message === true) {
+                    location.href = "/admin/index";
+                } else {
+                    $('#error').html(result.error);
+                }
+            }
+        });
+    }
+</script>
 </body>
 </html>

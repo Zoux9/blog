@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @MapperScan("com.zx.blog.dao")
 @SpringBootApplication
-public class BlogApplication {
+public class MyBlogApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BlogApplication.class, args);
+		SpringApplication.run(MyBlogApplication.class, args);
 	}
 
 }

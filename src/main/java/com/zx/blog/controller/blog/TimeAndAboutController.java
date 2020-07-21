@@ -1,5 +1,7 @@
 package com.zx.blog.controller.blog;
 
+import com.github.pagehelper.PageInfo;
+import com.zx.blog.entity.Blog;
 import com.zx.blog.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author zouxu
@@ -26,9 +29,7 @@ public class TimeAndAboutController {
 	 */
 	@RequestMapping(value = "/time", method = RequestMethod.GET)
 	public String time(Model model) {
-
-		model.addAttribute("timeBlog", blogService.getListBlog());
-
+		model.addAttribute("timeBlog", blogService.getBlogTime());
 		return "blog/time";
 	}
 

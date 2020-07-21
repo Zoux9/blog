@@ -65,6 +65,7 @@ public class BlogException extends RuntimeException {
 		this.errorMsg = errorMsg;
 	}
 
+	@Override
 	public String getMessage() {
 		return errorMsg;
 	}

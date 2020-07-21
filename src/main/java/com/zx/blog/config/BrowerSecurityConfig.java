@@ -1,5 +1,8 @@
 package com.zx.blog.config;
 
+import com.zx.blog.filter.ValidateCodeFilter;
+import com.zx.blog.handler.MyAuthenticationFailureHandler;
+import com.zx.blog.handler.MyAuthenticationSuccessHandler;
 import com.zx.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class BrowerSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -14,8 +18,18 @@ public class BrowerSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private ValidateCodeFilter validateCodeFilter;
+
+	@Autowired
+	private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+
+	@Autowired
+	private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
 		http.authorizeRequests()
 				// 所有用户均可访问的资源
 				.antMatchers("/**/css/**","/**/fonts/**", "/**/js/**", "/**/images/**", "/**/lib/**").permitAll()
@@ -24,7 +38,8 @@ public class BrowerSecurityConfig extends WebSecurityConfigurerAdapter {
 			 .formLogin()
 				// 指定登录页面,授予所有用户访问登录页面
 				.loginPage("/admin/login")
-				.defaultSuccessUrl("/admin/index",true)
+				.successHandler(myAuthenticationSuccessHandler)
+				.failureHandler(myAuthenticationFailureHandler)
 				.and()
 				.csrf().disable()
 			 .logout()

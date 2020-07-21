@@ -39,14 +39,11 @@ public class BlogIndexController {
 	 * @return
 	 */
 	@RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
-	public String index(@RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, @RequestParam(defaultValue = "8", value = "pageSize") Integer pageSize,
+	public String index(@RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, @RequestParam(defaultValue = "5", value = "pageSize") Integer pageSize,
 	                    Model model, HttpSession session) {
-
-		PageHelper.startPage(pageNum, pageSize);
-		List<Blog> listBlog = blogService.getListBlog();
-		PageInfo<Blog> listBlogPage = new PageInfo<>(listBlog);
-		model.addAttribute("blogs", listBlogPage);
+		model.addAttribute("blogs",blogService.getListBlog(pageNum,pageSize));
 		model.addAttribute("blogRecommend", blogService.getRecommend());
+		model.addAttribute("blogHeadline", blogService.getBlogHeadline());
 		model.addAttribute("blogCarousel", blogService.getCarousel());
 		session.setAttribute("blogNotice", blogService.getBlogNotice());
 		session.setAttribute("viewsRanking", blogService.getViewsRanking());
@@ -67,10 +64,7 @@ public class BlogIndexController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String getListBlog(@RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, @RequestParam(defaultValue = "4", value = "pageSize") Integer pageSize,
 	                          Model model) {
-		PageHelper.startPage(pageNum, pageSize);
-		List<Blog> listBlog = blogService.getListBlog();
-		PageInfo<Blog> listBlogPage = new PageInfo<>(listBlog);
-		model.addAttribute("listBlogPage", listBlogPage);
+		model.addAttribute("listBlogPage", blogService.getListBlog(pageNum,pageSize));
 
 		return "blog/list";
 	}
@@ -118,7 +112,6 @@ public class BlogIndexController {
 		model.addAttribute("blogPageInfo", blogPageInfo);
 		//查询参数
 		model.addAttribute("keyboard", keyboard);
-
 
 		return "blog/search";
 	}

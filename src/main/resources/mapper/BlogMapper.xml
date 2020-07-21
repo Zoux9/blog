@@ -8,6 +8,7 @@
         <result property="updateTime" column="update_time"/>
         <result property="recommend" column="recommend"/>
         <result property="typeId" column="type_id"/>
+        <result property="headline" column="headline"/>
         <result property="notice" column="notice"/>
         <result property="carousel" column="carousel"/>
         <result property="views" column="views"/>
@@ -25,6 +26,7 @@
         <result property="title" column="title"/>
         <result property="content" column="content"/>
         <result property="views" column="views"/>
+        <result property="headline" column="headline"/>
         <result property="notice" column="notice"/>
         <result property="updateTime" column="update_time"/>
         <result property="createTime" column="create_time"/>
@@ -49,7 +51,7 @@
 
     <select id="adminBlogInfo" parameterType="Blog" resultMap="adminBlog">
         select
-        b.id,b.title,b.update_time,b.published,b.recommend,b.views,b.type_id,t.id,t.name
+        b.id,b.title,b.update_time,b.published,b.headline,b.recommend,b.views,b.type_id,t.id,t.name
         from
         t_blog b
         left join
@@ -82,6 +84,11 @@
     <select id="getBlogById" parameterType="Long" resultMap="BlogInfo">
         select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,b.recommend,b.published,b.tag_ids,b.notice,b.carousel,u.nickname,u.avatar,t.id tid ,t.name  from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
         and b.id = #{id}
+    </select>
+
+    <select id="getBlogHeadline" parameterType="Long" resultMap="BlogInfo">
+        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.create_time,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,u.nickname,u.avatar,t.id tid ,t.name from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
+        and b.id = b.id and b.published = 1 and b.headline = 1 order by b.create_time desc
     </select>
 
 
@@ -117,27 +124,27 @@
     </select>
 
     <select id="getBlogNotice" resultMap="BlogInfo">
-      select b.id,b.title from t_blog b where b.notice = 1 order by update_time desc
+      select b.id,b.title from t_blog b where b.notice = 1 and b.published = 1 order by update_time desc
     </select>
 
     <select id="getCarousel" resultMap="BlogInfo">
-      select b.id ,b.first_picture,b.title from t_blog b where b.carousel = 1 order by b.views desc limit 4
+      select b.id ,b.first_picture,b.title from t_blog b where b.carousel = 1 and b.published = 1 order by b.views desc limit 4
     </select>
 
     <select id="getViewsRanking" resultMap="BlogInfo">
-        select b.id ,b.first_picture,b.title from t_blog b order by b.views desc limit 8
+        select b.id ,b.first_picture,b.title from t_blog b where b.published = 1 order by b.views desc limit 8
     </select>
 
     <select id="getRecommend" resultMap="BlogInfo">
-        select b.id ,b.first_picture,b.title, b.description from t_blog b where recommend = 1 order by b.update_time desc limit 6
+        select b.id ,b.first_picture,b.title, b.description from t_blog b where b.recommend = 1 and b.published = 1 order by b.update_time desc limit 6
     </select>
 
     <insert id="save" useGeneratedKeys="true" parameterType="Blog">
         insert into t_blog (id,title, content, first_picture, flag,
         views, appreciation, share_statement, comment,published,
-        recommend,notice,carousel,create_time, update_time, type_id,tag_ids, user_id, description)
+        recommend,headline,notice,carousel,create_time, update_time, type_id,tag_ids, user_id, description)
         values (#{id},#{title},#{content},#{firstPicture},#{flag},#{views},#{appreciation},
-        #{shareStatement},#{comment},#{published},#{recommend},#{notice},#{carousel},#{createTime},
+        #{shareStatement},#{comment},#{published},#{recommend},#{headline},#{notice},#{carousel},#{createTime},
         #{updateTime},#{typeId},#{tagIds},#{userId},#{description})
         <selectKey keyProperty="id" resultType="Long" order="AFTER">
             SELECT LAST_INSERT_ID()
@@ -159,6 +166,7 @@
         views = #{views},
         first_picture = #{firstPicture},
         description = #{description},
+        headline = #{headline},
         notice = #{notice},
         carousel = #{carousel},
         recommend = #{recommend},

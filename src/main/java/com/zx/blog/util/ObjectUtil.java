@@ -40,7 +40,7 @@ public class ObjectUtil {
     }
 
     public static <T> Map<String, Object> beanToMap(T bean) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(16);
         if (bean != null) {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {

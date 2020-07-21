@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.zx.blog.service.BaseErrorService;
 import com.zx.blog.service.impl.BaseErrorServiceImpl;
 
-public class ResultBody {
+public class ResultBody{
 	/**
 	 * 响应代码
 	 */
@@ -22,6 +22,7 @@ public class ResultBody {
 
 	public ResultBody() {
 	}
+
 
 	public ResultBody(BaseErrorService errorInfo) {
 		this.code = errorInfo.getResultCode();
@@ -99,7 +100,7 @@ public class ResultBody {
 	/**
 	 * 失败
 	 */
-	public static ResultBody error( String message) {
+	public static ResultBody error(String message) {
 		ResultBody rb = new ResultBody();
 		rb.setCode("-1");
 		rb.setMessage(message);

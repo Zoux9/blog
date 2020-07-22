@@ -8,10 +8,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link th:href="@{/blog/css/base_info.css}" rel="stylesheet">
 <link th:href="@{/blog/css/m.css}" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+<link th:href="@{/blog/css/tocbot.css}" rel="stylesheet">
 <link th:href="@{/blog/css/github-markdown.css}" rel="stylesheet" />
 <script th:src="@{/blog/js/jquery-1.8.3.min.js}" ></script>
+<script th:src="@{/blog/js/tocbot.js}" ></script>
 <script th:src="@{/blog/js/comm.js}"></script>
+
 <!--[if lt IE 9]-->
 <script th:src="@{/blog/js/modernizr.js}"></script>
 <!--[endif]-->
@@ -29,20 +31,23 @@
         padding: 15px;
       }
     }
+
   </style>
 </head>
 <body>
 <header th:replace="blog/header::header-fragment"></header>
 <!--top end-->
-<article> 
+<article>
   <!--lbox begin-->
   <div class="lbox" >
     <div class="markdown-body whitebg animated fadeIn" >
+
       <h1 class="con_tilte" th:text="${blog.title}">个人博客，属于我的小世界！</h1>
       <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}"></a>】</span><span th:text="${blog.views} + 人已围观"></span></p>
       <p class="con_info"><b>简介:</b><span th:text="${blog.description}"></span></p>
-      <div class="con_text" th:utext="${blog.content}"></div>
+      <div class="con_text toc-content" data-toc="#toc" th:utext="${blog.content}"></div>
        <p><span class="diggit" th:if="${blog.appreciation}">很赞哦！ (未开通)</span></p>
+
     </div>
     <div class="whitebg gbook">
       <h2 class="htitle">文章评论</h2>
@@ -52,9 +57,22 @@
     </div>
   </div>
   <!--lbox end-->
-  <div class="rbox">
-    <div th:replace="blog/sider::sider-fragment"></div>
-  </div>
+   <div class="rbox">
+
+       <div th:fragment="sider-fragment">
+           <div class="whitebg notice">
+               <h2 class="htitle">网站公告</h2>
+               <ul>
+                   <li th:each="notice : ${session.blogNotice}"><a th:href="@{/blog/{id}(id=${notice.id})}">[[${notice.title}]]</a></li>
+
+               </ul>
+           </div>
+           <div id="toc" class="whitebg paihang toc-auto">
+               <ol class="toc"></ol>
+           </div>
+       </div>
+
+   </div>
 </article>
   <!--页脚-->
   <footer th:replace="blog/footer::footer-fragment"></footer>
@@ -62,23 +80,22 @@
     /*鼠标特效 */
     /*这个方法用来随机一个十六进制颜色代码，让每一次点击浮动文字的杨色不同*/
     function co() {
-        var colorElements = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f";
-        var colorArray = colorElements.split(",");
-        var color = "#";
-        for (var i = 0; i < 6; i++) {
+        let colorElements = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f";
+        let colorArray = colorElements.split(",");
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
             color += colorArray[Math.floor(Math.random() * 16)];
         }
         return color;
     }
-
-    var a_idx = 0;
+    let a_idx = 0;
     $(document).ready(function($) {
         $("body").click(function(e) {
             /*这个数组中的每一个字符是你要浮动显示的词或句子，每次点击鼠标后按顺序出现*/
-            var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善","点个赞呗");
-            var $i = $("<span/>").text(a[a_idx]);
+            let a = ["富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善","点个赞呗"];
+            let $i = $("<span/>").text(a[a_idx]);
             a_idx = (a_idx + 1) % a.length;
-            var x = e.pageX,
+            let x = e.pageX,
                 y = e.pageY;
             $i.css({
                 "z-index" : 999999,
@@ -98,6 +115,20 @@
                     $i.remove();
                 });
         });
+    });
+
+    tocbot.init({
+        // Where to render the table of contents.
+        tocSelector: '.toc',
+        // Where to grab the headings to build the table of contents.
+        contentSelector: '.toc-content',
+        // Which headings to grab inside of the contentSelector element.
+        headingSelector: 'h1, h2, h3',
+        // For headings inside relative or absolute positioned containers within content.
+        hasInnerContainers: true,
+        positionFixedSelector: '.toc-auto',
+        positionFixedClass: 'is-position-fixed',
+        fixedSidebarOffset: 'auto',
     });
 </script>
 </body>

@@ -251,6 +251,8 @@ footer { background: #373D41; width: 100%; border-top: #00C1DE 10px solid; paddi
 footer a { color: #73777a; }
 footer a:hover { color: #00C1DE }
 .top { width: 40px; height: 40px; display: block; background: url(../images/top.png) no-repeat center #000; right: 50px; bottom: 10%; position: fixed; }
+.tocbot { width: 40px; height: 40px; display: block; background: url(../images/toc.png) no-repeat center #000; right: 50px; bottom: 16%; position: fixed; }
+
 /*
 type.html
 */

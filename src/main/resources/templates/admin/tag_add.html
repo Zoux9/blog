@@ -1,18 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>添加标签 - zealously后台管理系统</title>
-  <link rel="icon" th:href="@{/admin/images/favicon.ico}" type="image/ico">
-  <meta name="keywords" content="blog" />
-  <meta name="description" content="blog" />
-  <link th:href="@{/admin/css/bootstrap.min.css}" rel="stylesheet">
-  <link th:href="@{/admin/css/materialdesignicons.min.css}" rel="stylesheet">
-  <!--标签插件-->
-  <link rel="tylesheet" th:href="@{/admin/js/jquery-tags-input/jquery.tagsinput.min.css}">
-  <link th:href="@{/admin/css/style.min.css}" rel="stylesheet">
-</head>
+<head th:replace="admin/header::head-fragment"></head>
 
 <body>
 <div class="container-fluid p-t-15">
@@ -58,12 +46,8 @@
 <script>
 
 </script>
-<script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
-<script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
-
-
-<!--标签插件-->
-<script th:src="@{/admin/js/jquery-tags-input/jquery.tagsinput.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 <script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
 </body>
 </html>

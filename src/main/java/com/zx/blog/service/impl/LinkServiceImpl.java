@@ -3,7 +3,7 @@ package com.zx.blog.service.impl;
 import com.zx.blog.dao.LinkMapper;
 import com.zx.blog.entity.Link;
 import com.zx.blog.service.LinkService;
-import com.zx.blog.vo.BlogException;
+import com.zx.blog.exception.BlogException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,12 @@ import java.util.List;
 @Service
 public class LinkServiceImpl implements LinkService {
 
+	private final LinkMapper linkMapper;
+
 	@Autowired
-	private LinkMapper linkMapper;
+	public LinkServiceImpl(LinkMapper linkMapper) {
+		this.linkMapper = linkMapper;
+	}
 
 	@Override
 	public Integer applyLink(Link link) {

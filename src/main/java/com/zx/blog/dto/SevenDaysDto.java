@@ -1,4 +1,4 @@
-package com.zx.blog.vo;
+package com.zx.blog.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * @author zouxu
  * @date 2020/4/2 23:50
  */
-public class SevenDays {
+public class SevenDaysDto {
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private String clickDate;

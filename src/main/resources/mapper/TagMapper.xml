@@ -38,6 +38,6 @@
     </update>
 
     <select id="tagCount" resultType="Integer">
-        select count(id) from t_tag
+        select count(*) from t_tag
     </select>
 </mapper>

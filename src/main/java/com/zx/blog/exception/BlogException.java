@@ -1,4 +1,4 @@
-package com.zx.blog.vo;
+package com.zx.blog.exception;
 
 import com.zx.blog.service.BaseErrorService;
 

@@ -2,7 +2,7 @@ package com.zx.blog.filter;
 
 import com.zx.blog.handler.MyAuthenticationFailureHandler;
 import com.zx.blog.util.RedisComponentUtils;
-import com.zx.blog.vo.ValidateCodeException;
+import com.zx.blog.exception.ValidateCodeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

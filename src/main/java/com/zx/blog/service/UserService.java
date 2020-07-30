@@ -1,16 +1,16 @@
 package com.zx.blog.service;
 
 import com.zx.blog.entity.User;
-import com.zx.blog.vo.SevenDays;
+import com.zx.blog.dto.SevenDaysDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
-	List<SevenDays> findSevenDaysUser();
+	List<SevenDaysDto> findSevenDaysUser();
 
-	Integer userCount();
+	Integer countUser();
 
 	User getUserByName(String name);
 

@@ -1,14 +1,11 @@
 package com.zx.blog.handler;
 
 import com.zx.blog.service.impl.BaseErrorServiceImpl;
-import com.zx.blog.vo.BlogException;
-import com.zx.blog.vo.ResultBody;
+import com.zx.blog.exception.BlogException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

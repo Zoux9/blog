@@ -3,7 +3,7 @@ package com.zx.blog.service.impl;
 import com.zx.blog.dao.UserMapper;
 import com.zx.blog.entity.User;
 import com.zx.blog.service.UserService;
-import com.zx.blog.vo.SevenDays;
+import com.zx.blog.dto.SevenDaysDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,15 +11,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+	private final UserMapper userMapper;
+
 	@Autowired
-	private UserMapper userMapper;
+	public UserServiceImpl(UserMapper userMapper) {
+		this.userMapper = userMapper;
+	}
 
 	/**
 	 * 登录
@@ -55,9 +58,9 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	@Override
-	public List<SevenDays> findSevenDaysUser() {
-		List<SevenDays> sevenDaysUser = userMapper.findSevenDaysUser();
-		sevenDaysUser.sort(Comparator.comparing(SevenDays::getClickDate).reversed());
+	public List<SevenDaysDto> findSevenDaysUser() {
+		List<SevenDaysDto> sevenDaysUser = userMapper.findSevenDaysUser();
+		sevenDaysUser.sort(Comparator.comparing(SevenDaysDto::getClickDate).reversed());
 		return sevenDaysUser;
 	}
 
@@ -66,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	@Override
-	public Integer userCount() {
+	public Integer countUser() {
 		return userMapper.userCount();
 	}
 

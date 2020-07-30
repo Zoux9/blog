@@ -1,7 +1,7 @@
 package com.zx.blog.handler;
 
 import com.alibaba.fastjson.JSON;
-import com.zx.blog.vo.ValidateCodeException;
+import com.zx.blog.exception.ValidateCodeException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;

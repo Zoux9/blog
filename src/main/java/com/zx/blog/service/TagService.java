@@ -26,5 +26,5 @@ public interface TagService {
 
 	Tag getTagByName(String tagName);
 
-	Integer tagCount();
+	Integer countTag();
 }

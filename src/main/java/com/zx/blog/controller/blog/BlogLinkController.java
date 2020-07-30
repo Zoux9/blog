@@ -3,7 +3,7 @@ package com.zx.blog.controller.blog;
 import com.zx.blog.annotation.SystemLog;
 import com.zx.blog.entity.Link;
 import com.zx.blog.service.LinkService;
-import com.zx.blog.vo.BlogException;
+import com.zx.blog.exception.BlogException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class BlogLinkController {
 
+	private final LinkService linkService;
+
 	@Autowired
-	private LinkService linkService;
+	public BlogLinkController(LinkService linkService) {
+		this.linkService = linkService;
+	}
 
 
 	/**
@@ -60,9 +64,7 @@ public class BlogLinkController {
 	@SystemLog(description = "提交友链信息")
 	@RequestMapping(value = "/applyLink", method = RequestMethod.POST)
 	public String applyLink(Link link) {
-
 		Integer count = linkService.applyLink(link);
-
 		if (count <= 0) {
 			throw new BlogException("500", "未申请成功,请稍后再试");
 		}

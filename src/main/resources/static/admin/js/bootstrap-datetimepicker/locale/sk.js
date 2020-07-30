@@ -103,7 +103,7 @@
                 case 3:
                     return '[v stredu o] LT';
                 case 4:
-                    return '[vo štvrtok o] LT';
+                    return '[dto štvrtok o] LT';
                 case 5:
                     return '[v piatok o] LT';
                 case 6:

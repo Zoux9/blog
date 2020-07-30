@@ -11,12 +11,6 @@
 <link th:href="@{/blog/css/m.css}" rel="stylesheet">
 <link th:href="@{/blog/css/tocbot.css}" rel="stylesheet">
 <link th:href="@{/blog/css/github-markdown.css}" rel="stylesheet" />
-<script th:src="@{/blog/js/jquery-1.8.3.min.js}" ></script>
-<script th:src="@{/blog/js/tocbot.js}" ></script>
-<script th:src="@{/blog/js/comm.js}"></script>
-
-<!--[if lt IE 9]-->
-<script th:src="@{/blog/js/modernizr.js}"></script>
 <!--[endif]-->
   <style>
     .markdown-body {
@@ -72,11 +66,16 @@
                <ol class="toc"></ol>
            </div>
        </div>
-
    </div>
 </article>
-  <!--页脚-->
-  <footer th:replace="blog/footer::footer-fragment"></footer>
+<!--页脚-->
+<footer th:replace="blog/footer::footer-fragment"></footer>
+
+<script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
+<script th:src="@{/blog/js/tocbot.js}" ></script>
+<script th:src="@{/blog/js/comm.js}"></script>
+<!--[if lt IE 9]-->
+<script th:src="@{/blog/js/modernizr.js}"></script>
 <script>
     /*鼠标特效 */
     /*这个方法用来随机一个十六进制颜色代码，让每一次点击浮动文字的杨色不同*/

@@ -20,8 +20,12 @@ import java.util.List;
 @Transactional
 public class TagServiceImpl implements TagService {
 
+	private final TagMapper tagMapper;
+
 	@Autowired
-	private TagMapper tagMapper;
+	public TagServiceImpl(TagMapper tagMapper) {
+		this.tagMapper = tagMapper;
+	}
 
 
 	@Override
@@ -72,7 +76,7 @@ public class TagServiceImpl implements TagService {
 
 
 	@Override
-	public Integer tagCount() {
+	public Integer countTag() {
 		return tagMapper.tagCount();
 	}
 

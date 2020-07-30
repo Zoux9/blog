@@ -2,7 +2,7 @@ package com.zx.blog.controller.admin;
 
 import com.zx.blog.entity.User;
 import com.zx.blog.service.UserService;
-import com.zx.blog.vo.BlogException;
+import com.zx.blog.exception.BlogException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

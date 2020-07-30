@@ -1,4 +1,4 @@
-package com.zx.blog.vo;
+package com.zx.blog.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

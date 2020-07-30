@@ -2,10 +2,9 @@ package com.zx.blog.service;
 
 import com.github.pagehelper.PageInfo;
 import com.zx.blog.entity.Blog;
-import com.zx.blog.vo.SevenDays;
+import com.zx.blog.dto.SevenDaysDto;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author zouxu
@@ -31,6 +30,19 @@ public interface BlogService {
 	List<Blog> getViewsRanking();
 
 	/**
+	 * 修改文章阅读量
+	 * @param blogId
+	 * @return
+	 */
+	Integer updateBlogView(Long blogId);
+
+	/**
+	 * 获得某篇文章的访问量
+	 * @param BlogId
+	 * @return
+	 */
+	Integer getBlogViewsByBlogId(Long BlogId);
+	/**
 	 * 首页头条
 	 * @return
 	 */
@@ -52,9 +64,9 @@ public interface BlogService {
 
 	List<Blog> getBlogByTagId(Long tagId);
 
-	List<SevenDays> findSevenDaysBlog();
+	List<SevenDaysDto> findSevenDaysBlog();
 
-	Integer blogCount();
+	Integer countBlog();
 
 
 }

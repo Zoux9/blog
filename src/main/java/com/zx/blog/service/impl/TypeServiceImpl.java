@@ -18,8 +18,12 @@ import java.util.List;
 @Transactional
 public class TypeServiceImpl implements TypeService {
 
+	private final TypeMapper typeMapper;
+
 	@Autowired
-	private TypeMapper typeMapper;
+	public TypeServiceImpl(TypeMapper typeMapper) {
+		this.typeMapper = typeMapper;
+	}
 
 
 	@Override
@@ -53,7 +57,7 @@ public class TypeServiceImpl implements TypeService {
 	}
 
 	@Override
-	public Integer typeCount() {
+	public Integer countType() {
 		return typeMapper.typeCount();
 	}
 

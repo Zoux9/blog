@@ -2,7 +2,7 @@ package com.zx.blog.dao;
 
 import com.zx.blog.entity.User;
 
-import com.zx.blog.vo.SevenDays;
+import com.zx.blog.dto.SevenDaysDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface UserMapper {
 
 	User getUserByName(String userName);
 
-	List<SevenDays> findSevenDaysUser();
+	List<SevenDaysDto> findSevenDaysUser();
 
 	Integer userCount();
 

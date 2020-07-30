@@ -1,7 +1,6 @@
 package com.zx.blog.service.impl;
 
 import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Funnel;
@@ -12,12 +11,11 @@ import com.zx.blog.entity.Tag;
 import com.zx.blog.entity.User;
 import com.zx.blog.handler.BloomFilterHelper;
 import com.zx.blog.service.BlogService;
-import com.zx.blog.service.TagService;
 import com.zx.blog.util.MarkDownUtil;
 import com.zx.blog.util.MyBeanUtils;
 import com.zx.blog.util.RedisComponentUtils;
-import com.zx.blog.vo.BlogException;
-import com.zx.blog.vo.SevenDays;
+import com.zx.blog.exception.BlogException;
+import com.zx.blog.dto.SevenDaysDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,14 +33,18 @@ import java.util.*;
 @Transactional
 public class BlogServiceImpl implements BlogService {
 
-	@Autowired
-	private BlogMapper blogMapper;
+	private final BlogMapper blogMapper;
+
+	private final UserMapper userMapper;
+
+	private final RedisComponentUtils redisService;
 
 	@Autowired
-	private UserMapper userMapper;
-
-	@Autowired
-	private RedisComponentUtils redisService;
+	public BlogServiceImpl(BlogMapper blogMapper, UserMapper userMapper, RedisComponentUtils redisService) {
+		this.blogMapper = blogMapper;
+		this.userMapper = userMapper;
+		this.redisService = redisService;
+	}
 
 	@Override
 	public int save(Blog blog) {
@@ -63,17 +65,13 @@ public class BlogServiceImpl implements BlogService {
 			setBlogAndTag(blog, count);
 
 			//写入布隆过滤器
-			BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>((Funnel<String>) (from, into) -> into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8), 1000000, 0.00001);
-			redisService.addByBloomFilter(myBloomFilterHelper, "id_existed_bloom", blog.getId().toString());
+			BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>((Funnel<String>) (from, into) -> into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8), 1000000, 0.0001);
+			redisService.addByBloomFilter(myBloomFilterHelper, "blog_id_existed_bloom", blog.getId().toString());
 
 			//缓存分页
-			Blog blogPage = blogMapper.getBlogById(blog.getId());
-			String hkey = blogPage.getId().toString();
-			redisService.setPage("blog", hkey, Double.valueOf(hkey), blogPage);
-
-			//首页分类缓存
-			String key = "blog:" + blogPage.getType().getId() + ":info";
-			redisService.zAdd(key, blogPage, blogPage.getType().getId());
+			if (blog.isPublished()){
+				this.BlogPage(blog);
+			}
 		} else {
 
 			Blog blogInfo = blogMapper.getBlogById(blog.getId());
@@ -81,7 +79,7 @@ public class BlogServiceImpl implements BlogService {
 			if (blogInfo != null) {
 				BeanUtils.copyProperties(blog, blogInfo, MyBeanUtils.getNullPropertyNames(blog));
 
-				//删除中间表
+				//删除中间表标签
 				blogMapper.deleteBlogAndTag(blogInfo.getId());
 
 				//设置用户ID
@@ -95,9 +93,28 @@ public class BlogServiceImpl implements BlogService {
 					//Redis缓存一致性:双删
 					String key = "blog:" + blog.getId() + ":info";
 					redisService.remove(key);
+
+					//发布的文章保存,删除分页缓存
+					if (!blog.isPublished()){
+						redisService.remove(key, blog);
+						redisService.delPage("blog", blog.getId().toString());
+					}
+
+					//更新文章内容
 					count = blogMapper.updateBlog(blogInfo);
+					//从写入标签
 					setBlogAndTag(blogInfo, count);
+					//加入缓存分页
+					if (blog.isPublished()){
+						this.BlogPage(blog);
+					}
 					Thread.sleep(100);
+
+					//发布的文章保存,删除分页缓存
+					if (!blog.isPublished()){
+						redisService.remove(key, blog);
+						redisService.delPage("blog", blog.getId().toString());
+					}
 					redisService.remove(key);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -109,16 +126,33 @@ public class BlogServiceImpl implements BlogService {
 		return count;
 	}
 
-	private Integer setBlogAndTag(Blog blog, Integer count) {
+	/**
+	 * 分页
+	 * @param blog
+	 */
+	private void BlogPage(Blog blog) {
+		Blog blogPage = blogMapper.getBlogById(blog.getId());
+		String hkey = blogPage.getId().toString();
+		redisService.setPage("blog", hkey, Double.valueOf(hkey), blogPage);
+
+		//首页分类缓存
+		String key = "blog_type::blog_type_id_" + blogPage.getType().getId();
+		redisService.zAdd(key, blogPage, blogPage.getType().getId());
+	}
+
+	/**
+	 * 保存文章与标签中间表
+	 * @param blog
+	 * @param count
+	 */
+	private void setBlogAndTag(Blog blog, Integer count) {
 		List<Tag> tags = blog.getTags();
 		for (Tag tag : tags) {
-
 			Map<String, Long> map = new HashMap<>(3); // 2 / 0.75 + 1
 			map.put("tagId", tag.getId());
 			map.put("blogId", blog.getId());
-			count = blogMapper.saveBlogAndTag(map);
+			blogMapper.saveBlogAndTag(map);
 		}
-		return count;
 	}
 
 	@Override
@@ -138,10 +172,10 @@ public class BlogServiceImpl implements BlogService {
 		try {
 			//TypeId获取
 			Blog blog = blogMapper.getBlogById(id);
-			String key = "blog:" + blog.getType().getId() + ":info";
+			String key = "blog_type::blog_type_id_" + blog.getType().getId();
 
 			//删缓存
-			redisService.remove(key,blog);
+			redisService.remove(key, blog);
 			redisService.delPage("blog", id.toString());
 
 			//删库
@@ -150,7 +184,7 @@ public class BlogServiceImpl implements BlogService {
 			Thread.sleep(100);
 
 			//删缓存
-			redisService.remove(key,blog);
+			redisService.remove(key, blog);
 			redisService.delPage("blog", id.toString());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -165,8 +199,8 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	public Blog getBlogConvertDB(Long id) {
-		BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>((Funnel<String>) (from, into) -> into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8), 1000000, 0.00001);
-		boolean existed = redisService.includeByBloomFilter(myBloomFilterHelper, "id_existed_bloom", id.toString());
+		BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>((Funnel<String>) (from, into) -> into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8), 1000000, 0.0001);
+		boolean existed = redisService.includeByBloomFilter(myBloomFilterHelper, "blog_id_existed_bloom", id.toString());
 
 		Blog blog = null;
 
@@ -204,12 +238,15 @@ public class BlogServiceImpl implements BlogService {
 		Blog blog = null;
 		//读取缓存
 		blog = (Blog) redisService.get(key);
+
 		if (blog != null) {
+			Integer view = this.updateBlogView(blog.getId());
+			blog.setViews(view);
 			//缓存有则返回
 			return blog;
 		} else {
 			//没有则查询数据库
-			blog = getBlogConvertDB(id);
+			blog = this.getBlogConvertDB(id);
 			if (blog != null) {
 				redisService.set(key, blog, (long) (60 * 60 * 12));
 			}
@@ -228,7 +265,10 @@ public class BlogServiceImpl implements BlogService {
 			if (obj instanceof HashSet<?>) {
 				for (Object anObj : obj) {
 					String blogId = (String) anObj;
-					blogList.add((Blog) redisService.hmGet(key, blogId));
+					Blog blog = (Blog) redisService.hmGet(key, blogId);
+					if (blog.isPublished()){
+						blogList.add(blog);
+					}
 				}
 			}
 		} else {
@@ -236,9 +276,9 @@ public class BlogServiceImpl implements BlogService {
 			blogList = blogMapper.getListBlog();
 			if (!blogList.isEmpty()) {
 				//数据添加到布隆过滤器
-				BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>((Funnel<String>) (from, into) -> into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8), 1000000, 0.00001);
+				BloomFilterHelper<String> myBloomFilterHelper = new BloomFilterHelper<>((Funnel<String>) (from, into) -> into.putString(from, Charsets.UTF_8).putString(from, Charsets.UTF_8), 1000000, 0.0001);
 				for (Blog blog : blogList) {
-					redisService.addByBloomFilter(myBloomFilterHelper, "id_existed_bloom", blog.getId().toString());
+					redisService.addByBloomFilter(myBloomFilterHelper, "blog_id_existed_bloom", blog.getId().toString());
 					String hkey = blog.getId().toString();
 					redisService.setPage(key, hkey, Double.valueOf(hkey), blog);
 				}
@@ -248,7 +288,7 @@ public class BlogServiceImpl implements BlogService {
 		Page<Blog> blogPage = new Page<>();
 		blogPage.setPageNum(pageNum);
 		blogPage.setPageSize(pageSize);
-		blogPage.setTotal(redisService.getSize("blog"));
+		blogPage.setTotal(redisService.getPageSize("blog"));
 		PageInfo<Blog> blogPageInfo = new PageInfo<>(blogPage);
 		blogPageInfo.setList(blogList);
 		return blogPageInfo;
@@ -259,6 +299,37 @@ public class BlogServiceImpl implements BlogService {
 	public List<Blog> getViewsRanking() {
 		return blogMapper.getViewsRanking();
 	}
+
+	@Override
+	public Integer updateBlogView(Long blogId) {
+		Integer view = this.getBlogViewsByBlogId(blogId);
+		if (view == null) {
+			return null;
+		}
+		redisService.hput("blog_views::blog_views_id_" + blogId,String.valueOf(blogId), view + 1);
+		return view;
+	}
+
+	/**
+	 * 获得某篇文章的访问量
+	 *
+	 * @param blogId
+	 * @return
+	 */
+	@Override
+	public Integer getBlogViewsByBlogId(Long blogId) {
+		Integer view = (Integer) redisService.hmGet("blog_views::blog_views_id_" + blogId, String.valueOf(blogId));
+		if (view == null) {
+			Blog blog = this.getBlogById(blogId);
+			if (blog == null) {
+				return null;
+			}
+			redisService.hput("blog_views::blog_views_id_" + blogId, String.valueOf(blogId), blog.getViews());
+			return blog.getViews();
+		}
+		return view;
+	}
+
 
 	@Override
 	public List<Blog> getBlogHeadline() {
@@ -287,14 +358,17 @@ public class BlogServiceImpl implements BlogService {
 
 	@Override
 	public List<Blog> getBlogByTypeId(Long typeId) {
-		String key = "blog:" + typeId + ":info";
+		String key = "blog_type::blog_type_id_" + typeId;
 		List<Blog> blogList = new ArrayList<>();
 		//读取缓存
-		Set<Object> obj = redisService.rangeByScore(key, 0, -1);
+		Set<Object> obj = redisService.zRange(key, 0, -1);
 		if (!obj.isEmpty()) {
 			if (obj instanceof HashSet<?>) {
 				for (Object anObj : obj) {
-					blogList.add((Blog) anObj);
+					Blog blog = (Blog) anObj;
+					if (blog.isPublished()){
+						blogList.add(blog);
+					}
 				}
 			}
 		} else {
@@ -326,14 +400,16 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public List<SevenDays> findSevenDaysBlog() {
-		List<SevenDays> sevenDaysBlog = blogMapper.findSevenDaysBlog();
-		sevenDaysBlog.sort(Comparator.comparing(SevenDays::getClickDate).reversed());
+	public List<SevenDaysDto> findSevenDaysBlog() {
+		List<SevenDaysDto> sevenDaysBlog = blogMapper.findSevenDaysBlog();
+		if (sevenDaysBlog.isEmpty()) {
+			return null;
+		}
 		return sevenDaysBlog;
 	}
 
 	@Override
-	public Integer blogCount() {
+	public Integer countBlog() {
 		return blogMapper.blogCount();
 	}
 

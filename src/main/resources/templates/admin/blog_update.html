@@ -7,10 +7,9 @@
     <link rel="icon" href="favicon.ico" type="image/ico">
     <meta name="keywords" content="blog" />
     <meta name="description" content="blog" />
-    <link th:href="@{/admin/css/bootstrap.min.css}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
     <link th:href="@{/admin/css/materialdesignicons.min.css}" rel="stylesheet">
     <link th:href="@{/admin/css/style.min.css}" rel="stylesheet">
-    <link th:href="@{/admin/js/jquery-tags-input/jquery.tagsinput.min.css}" rel="stylesheet">
     <link th:href="@{/admin/lib/editormd/css/editormd.min.css}" rel="stylesheet">
     <link th:href="@{/admin/css/select2.css}" rel="stylesheet"/>
 </head>
@@ -129,15 +128,12 @@
 
 </div>
 
-
-<script type="text/javascript" th:src="@{/admin/js/jquery.min.js}"></script>
-<script type="text/javascript" th:src="@{/admin/js/bootstrap.min.js}"></script>
+<script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <!--标签插件-->
-<script th:src="@{/admin/js/jquery-tags-input/jquery.tagsinput.min.js}"></script>
-<!--<script th:src="@{/admin/js/jquery-tags-input/jquery.tagsinput.min.js}"></script>-->
 <script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
 <script th:src="@{/admin/lib/editormd/editormd.min.js}"></script>
-<script th:src="@{/admin/js/select2.min.js}"></script>
 <script type="text/javascript">
     var editor;
 

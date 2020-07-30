@@ -6,7 +6,7 @@
     </select>
 
     <select id="typeCount" resultType="Integer">
-        select count(id) from t_type
+        select count(*) from t_type
     </select>
 
     <select id="getByTypeId" parameterType="Long" resultType="com.zx.blog.entity.Type">

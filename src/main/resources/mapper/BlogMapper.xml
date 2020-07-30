@@ -49,6 +49,11 @@
         </association>
     </resultMap>
 
+    <resultMap id="SevenDaysDto" type="com.zx.blog.dto.SevenDaysDto">
+        <result property="clickDate" column="click_date"/>
+        <result property="count" column="count"/>
+    </resultMap>
+
     <select id="adminBlogInfo" parameterType="Blog" resultMap="adminBlog">
         select
         b.id,b.title,b.update_time,b.published,b.headline,b.recommend,b.views,b.type_id,t.id,t.name
@@ -82,7 +87,7 @@
 
 
     <select id="getBlogById" parameterType="Long" resultMap="BlogInfo">
-        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,b.recommend,b.published,b.tag_ids,b.notice,b.carousel,u.nickname,u.avatar,t.id tid ,t.name  from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
+        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,b.headline,b.recommend,b.published,b.tag_ids,b.notice,b.carousel,u.nickname,u.avatar,t.id tid ,t.name  from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
         and b.id = #{id}
     </select>
 
@@ -98,7 +103,7 @@
     </select>
 
     <select id="getListBlog" resultMap="BlogInfo">
-        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.create_time,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,u.nickname,u.avatar,t.id tid ,t.name from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
+        select b.id,b.first_picture,b.flag,b.title,b.content,b.published,b.views,b.create_time,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,u.nickname,u.avatar,t.id tid ,t.name from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
         and b.id = b.id and b.published = 1 order by b.create_time desc
     </select>
 
@@ -110,7 +115,7 @@
     </select>
 
     <select id="getBlogByTypeId" resultMap="BlogInfo">
-        select b.id,b.title,b.flag,b.first_picture, b.views,b.update_time,b.description,
+        select b.id,b.title,b.flag,b.first_picture,b.published,b.views,b.update_time,b.description,
         t.id tid,t.name,
         u.nickname, u.avatar
         from t_blog b, t_type t,t_user u
@@ -151,6 +156,23 @@
         </selectKey>
     </insert>
 
+    <update id="batchUpdateBlogViews" parameterType="List">
+        update t_blog
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="views = case" suffix="end,">
+                <foreach collection="list" item="blog" index="index">
+                    <if test="blog.views!=null">
+                        when id=#{blog.id} then #{blog.views}
+                    </if>
+                </foreach>
+            </trim>
+        </trim>
+        where
+        <foreach collection="list" separator="or" item="blog" index="index" >
+            id = #{blog.id}
+        </foreach>
+    </update>
+
     <update id="updateBlog" parameterType="Blog">
         update t_blog set
         published = #{published},
@@ -176,7 +198,7 @@
         <if test="published != null and published != ''">
             published = #{published},
         </if>
-        update_time = #{updateTime} where id = #{id};
+        update_time = #{updateTime} where id = #{id}
     </update>
 
     <delete id="deleteBlogAndTag" parameterType="Long">
@@ -184,19 +206,14 @@
     </delete>
 
     <insert id="saveBlogAndTag" parameterType="Map">
-        insert into t_blog_tags (tag_id, blog_id) values (#{tagId},#{blogId});
+        insert into t_blog_tags (tag_id, blog_id) values (#{tagId},#{blogId})
     </insert>
 
     <delete id="deleteBlog" parameterType="Long">
       delete from t_blog where id = #{id}
     </delete>
 
-    <resultMap id="SevenDays" type="com.zx.blog.vo.SevenDays">
-        <result property="clickDate" column="click_date"/>
-        <result property="count" column="count"/>
-    </resultMap>
-
-    <select id="findSevenDaysBlog" resultMap="SevenDays">
+    <select id="findSevenDaysBlog" resultMap="SevenDaysDto">
         select a.click_date,ifnull(b.count,0) as count
         from (
             SELECT curdate() as click_date
@@ -220,6 +237,7 @@
     </select>
 
     <select id="blogCount" resultType="Integer">
-        select count(id) from t_blog
+        select count(*) from t_blog
     </select>
+
 </mapper>

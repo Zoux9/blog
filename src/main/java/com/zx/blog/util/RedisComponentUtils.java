@@ -19,6 +19,23 @@ public class RedisComponentUtils {
 
 
 	/**
+	 * 实现命令：KEYS pattern，查找所有符合给定模式 pattern的 key
+	 */
+	public Set<String> keys(String pattern) {
+		return redisTemplate.keys(pattern);
+	}
+
+	/**
+	 * 实现命令：INCR key，增加key一次
+	 *
+	 * @param key
+	 * @return
+	 */
+	public Long incr(String key, long delta) {
+		return redisTemplate.opsForValue().increment(key, delta);
+	}
+
+	/**
 	 * 写入缓存
 	 *
 	 * @param key
@@ -26,12 +43,8 @@ public class RedisComponentUtils {
 	 * @return boolean
 	 */
 
-	public boolean set(String key, Object value) {
-		boolean result = false;
+	public void set(String key, Object value) {
 		redisTemplate.opsForValue().set(key, value);
-
-		result = true;
-		return result;
 	}
 
 	/**
@@ -217,6 +230,18 @@ public class RedisComponentUtils {
 	}
 
 	/**
+	 * ZSet获取全部
+	 * @param key
+	 * @param scoure
+	 * @param scoure1
+	 * @return
+	 */
+	public Set<Object> zRange(String key, int scoure, int scoure1) {
+		ZSetOperations<String, Object> zset = redisTemplate.opsForZSet();
+		return zset.range(key, scoure, scoure1);
+	}
+
+	/**
 	 * 删除集合中数据
 	 * @param key
 	 * @param o
@@ -300,7 +325,7 @@ public class RedisComponentUtils {
 	 * @param key
 	 * @return
 	 */
-	public Long getSize(String key) {
+	public Long getPageSize(String key) {
 		return redisTemplate.opsForZSet().zCard(key + ":page");
 	}
 

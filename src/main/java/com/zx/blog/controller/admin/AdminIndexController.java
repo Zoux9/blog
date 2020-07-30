@@ -4,7 +4,7 @@ import com.zx.blog.service.BlogService;
 import com.zx.blog.service.TagService;
 import com.zx.blog.service.TypeService;
 import com.zx.blog.service.UserService;
-import com.zx.blog.vo.SevenDays;
+import com.zx.blog.dto.SevenDaysDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,22 +36,22 @@ public class AdminIndexController {
 
 	@RequestMapping(value = "/main", method = RequestMethod.GET)
 	public String adminIndex(Model model){
-		model.addAttribute("blogCount",blogService.blogCount());
-		model.addAttribute("userCount",userService.userCount());
-		model.addAttribute("typeCount",typeService.typeCount());
-		model.addAttribute("tagCount",tagService.tagCount());
+		model.addAttribute("blogCount",blogService.countBlog());
+		model.addAttribute("userCount",userService.countUser());
+		model.addAttribute("typeCount",typeService.countType());
+		model.addAttribute("tagCount",tagService.countTag());
 		return "admin/main";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/findSevenDaysBlog", method = RequestMethod.GET)
-	public List<SevenDays> findSevenDaysBlog(){
+	public List<SevenDaysDto> findSevenDaysBlog(){
 		return blogService.findSevenDaysBlog();
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/findSevenDaysUser", method = RequestMethod.GET)
-	public List<SevenDays> findSevenDaysUser(){
+	public List<SevenDaysDto> findSevenDaysUser(){
 		return userService.findSevenDaysUser();
 	}
 

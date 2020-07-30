@@ -24,5 +24,5 @@ public interface TypeService {
 
 	Type getTypeByName(String typeName);
 
-	Integer typeCount();
+	Integer countType();
 }

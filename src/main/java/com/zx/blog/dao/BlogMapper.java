@@ -1,7 +1,9 @@
 package com.zx.blog.dao;
 
 import com.zx.blog.entity.Blog;
-import com.zx.blog.vo.SevenDays;
+import com.zx.blog.dto.BlogViewsDto;
+import com.zx.blog.dto.SevenDaysDto;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -44,13 +46,15 @@ public interface BlogMapper {
 
 	List<Blog> getBlogByTagId(Long tagId);
 
-	List<SevenDays> findSevenDaysBlog();
+	List<SevenDaysDto> findSevenDaysBlog();
 
 	Integer blogCount();
 
-	Integer saveBlogAndTag(Map<String, Long> map);
+	void saveBlogAndTag(Map<String, Long> map);
 
 	Integer deleteBlogAndTag(Long blogId);
 
 	Integer updateBlog(Blog blog);
+
+	void batchUpdateBlogViews(@Param("list") List<BlogViewsDto> dtoList);
 }

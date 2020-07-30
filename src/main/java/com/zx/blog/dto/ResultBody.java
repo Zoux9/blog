@@ -1,4 +1,4 @@
-package com.zx.blog.vo;
+package com.zx.blog.dto;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zx.blog.service.BaseErrorService;

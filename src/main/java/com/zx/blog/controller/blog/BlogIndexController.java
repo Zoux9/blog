@@ -23,14 +23,18 @@ import java.util.List;
 @RequestMapping
 public class BlogIndexController {
 
-	@Autowired
-	private BlogService blogService;
+	private final BlogService blogService;
+
+	private final TypeService typeService;
+
+	private final TagService tagService;
 
 	@Autowired
-	private TypeService typeService;
-
-	@Autowired
-	private TagService tagService;
+	public BlogIndexController(BlogService blogService, TypeService typeService, TagService tagService) {
+		this.blogService = blogService;
+		this.typeService = typeService;
+		this.tagService = tagService;
+	}
 
 	/**
 	 * 博客首页

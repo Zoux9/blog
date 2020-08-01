@@ -23,6 +23,7 @@ public class Blog implements Serializable {
 	private boolean comment;            //是否开启评论
 	private boolean published;          //是否发布文章
 	private boolean recommend;          //是否推荐
+	private String description;         //简介
 	private Date createTime;            //文章创建时间
 	private Date updateTime;            //文章更新时间
 
@@ -32,7 +33,6 @@ public class Blog implements Serializable {
 
 	//获取多个标签的id
 	private String tagIds;              //标签ID
-	private String description;         //简介
 
 	private Type type;                  //分类
 	private User user;                  //用户

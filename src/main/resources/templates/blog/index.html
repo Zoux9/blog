@@ -46,7 +46,8 @@
                 </ul>
               </div>
               <ul class="newslist" >
-                <li th:each="blog, blogStart : ${typeBlog}" th:if="${blogStart.index} >= 2"><i></i><a th:href="@{/blog/{id}(id=${blog.id})}">[[${blog.title}]]</a>
+                <li th:each="blog, blogStart : ${typeBlog}" th:if="${blogStart.index} >= 2 and ${blogStart.index} < 7"><i></i><a th:href="@{/blog/{id}(id=${blog.id})}">[[${blog.title}]]</a>
+                  <p th:text="${blog.description}"></p>
               </ul>
             </div>
          </div>
@@ -126,7 +127,7 @@
   </article>
   <!--页脚-->
   <footer th:replace="blog/footer::footer-fragment"></footer>
-    <script th:src="@{/blog/js/jquery-1.8.3.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
     <script th:src="@{/blog/js/comm.js}"></script>
     <script th:src="@{/blog/js/modernizr.js}"></script>
     <script th:inline="javascript">

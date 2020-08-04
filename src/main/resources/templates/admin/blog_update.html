@@ -8,11 +8,9 @@
     <meta name="keywords" content="blog"/>
     <meta name="description" content="blog"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vditor@3.3/dist/index.css"/>
     <link th:href="@{/admin/css/materialdesignicons.min.css}" rel="stylesheet">
     <link th:href="@{/admin/css/style.min.css}" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vditor/dist/index.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/vditor/dist/index.min.js"></script>
-    <link th:href="@{/admin/css/select2.css}" rel="stylesheet"/>
 </head>
 
 <body>
@@ -28,28 +26,18 @@
                         <input type="hidden" name="id" th:value="*{id}"/>
 
                         <div class="form-group col-md-2 form-inline">
-                            <label for="type">来源</label>
-                            <select name="flag" class="form-control">
-                                <option value="" disabled hidden>请选择来源</option>
-                                <option th:text="${blog.flag}"></option>
-                            </select>
+                            <label>来源</label>
+                            <div id="flag" class="xm-select-demo"></div>
                         </div>
 
                         <div class="form-group col-md-2 form-inline">
-                            <label for="type">分类</label>
-                            <select name="typeId" class="form-control" id="type">
-                                <option th:each="type : ${types}" th:field="${blog.type.id}" th:value="${type.id}"
-                                        name="typeId" th:text="${type.name}"></option>
-                            </select>
+                            <label>分类</label>
+                            <div id="types" class="xm-select-demo"></div>
                         </div>
 
-                        <div class="form-group col-md-6 form-inline">
+                        <div class="form-group col-md-4 form-inline">
                             <label>标签</label>
-                            <select class="col-md-6 tags" name="tagIds" multiple>
-                                <option value="" disabled>--请选择标签--</option>
-                                <option th:each="tag : ${tags}" th:selected="${ids.contains(tag.id)}"
-                                        th:value="${tag.id}" th:text="${tag.name}" name="tagIds"></option>
-                            </select>
+                            <div id="tags" class="xm-select-demo"></div>
                         </div>
                         <div class="form-group col-md-12">
                             <label for="title">标题</label>
@@ -66,10 +54,8 @@
 
                         <div class="col-md-12">
                             <label>内容</label>
-                            <div id="md-editorm" style="z-index: 1 !important;">
                                 <textarea id="content" name="content" th:text="*{content}"
                                           style="display:none;"></textarea>
-                            </div>
                             <div id="vditor"></div>
                         </div>
 
@@ -133,8 +119,9 @@
 <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vditor@3.3/dist/index.min.js"></script>
 <script type="text/javascript" th:src="@{/admin/js/main.min.js}"></script>
-<script th:src="@{/admin/js/select2.min.js}"></script>
+<script th:src="@{/admin/js/xm-select/xm-select.js}"></script>
 <script type="text/javascript">
     let img_text = '';
     let content = document.getElementById("content");
@@ -168,7 +155,89 @@
         },
     });
 
-    $('.tags').select2();
+    let flags = xmSelect.render({
+        el: '#flag',
+        radio: true,
+        tips: '这里是来源!',
+        name: 'flag',
+        layVerify: 'required',
+        layVerType: 'tips',
+        clickClose: true,
+        empty: '呀, 没有数据呢',
+        theme: {
+            color: '#e54d42',
+        },
+        data: [
+            {name: '转载', value: 0},
+            {name: '原创', value: 1},
+        ]
+    })
+
+    let tags = xmSelect.render({
+        el: '#tags',
+        name: 'tagIds',
+        layVerify: 'required',
+        layVerType: 'tips',
+        tips: '你要选择哪个标签呢?',
+        filterable: true,
+        autoRow: true,
+        empty: '呀, 没有数据呢',
+        toolbar: {
+            show: true,
+        },
+        data: [],
+        theme: {
+            color: '#1cbbb4',
+        },
+    })
+
+    let types = xmSelect.render({
+        el: '#types',
+        radio: true,
+        tips: '这里是分类!',
+        name: 'typeId',
+        layVerify: 'required',
+        layVerType: 'tips',
+        clickClose: true,
+        empty: '呀, 没有数据呢',
+        theme: {
+            color: '#f37b1d',
+        },
+        data: []
+    })
+
+    $.ajax({
+        type: 'get',
+        url: '/admin/typeList',
+        success: function (data) {
+            types.update({
+                data: data,
+            })
+        }
+    });
+
+
+    $.ajax({
+        type: 'get',
+        url: '/admin/tagList',
+        success: function (data) {
+            tags.update({
+                data: data,
+            })
+        }
+    });
+
+    let blogId = $("[name='id']").val();
+    let url = '/admin/blog/query/' + blogId;
+    $.ajax({
+        type: 'get',
+        url: url,
+        success: function (data) {
+            types.setValue([data.type]);
+            flags.setValue([data.flag]);
+            tags.setValue(data.tag)
+        }
+    });
 
     // 保存
     $('#save-btn').click(function () {

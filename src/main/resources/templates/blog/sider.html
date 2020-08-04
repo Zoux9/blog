@@ -8,7 +8,6 @@
         <h2 class="htitle">网站公告</h2>
         <ul>
           <li th:each="notice : ${session.blogNotice}"><a th:href="@{/blog/{id}(id=${notice.id})}">[[${notice.title}]]</a></li>
-
         </ul>
       </div>
       <div class="whitebg paihang">

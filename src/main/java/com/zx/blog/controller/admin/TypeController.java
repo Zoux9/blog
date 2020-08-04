@@ -1,5 +1,6 @@
 package com.zx.blog.controller.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zx.blog.entity.Type;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,8 +26,11 @@ import java.util.List;
 @RequestMapping("/admin")
 public class TypeController {
 
-	@Autowired
-	private TypeService typeService;
+	private final TypeService typeService;
+
+	public TypeController(TypeService typeService) {
+		this.typeService = typeService;
+	}
 
 
 	/**
@@ -46,6 +51,24 @@ public class TypeController {
 		model.addAttribute("typePage", typePageInfo);
 
 		return "admin/type";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/typeList", method = RequestMethod.GET)
+	public List<JSONObject> getTypeList() {
+		List<JSONObject> jsonObjectList = new ArrayList<>();
+		List<Type> typeList = typeService.getListType();
+
+		if (typeList == null) {
+			return null;
+		}
+		for (Type type : typeList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("name",type.getName());
+			jsonObject.put("value",type.getId());
+			jsonObjectList.add(jsonObject);
+		}
+		return jsonObjectList;
 	}
 
 
@@ -99,7 +122,7 @@ public class TypeController {
 		//查询数据库中分类是否重复
 		Type typeByName = typeService.getTypeByName(type.getName());
 		if (typeByName != null) {
-				result.rejectValue("name", "nameError", "该分类名称重复");
+			result.rejectValue("name", "nameError", "该分类名称重复");
 
 		}
 

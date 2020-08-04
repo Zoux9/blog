@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
-<title>列表页-zealously个人博客</title>
+<title>列表页-荔枝博客</title>
 <link rel="icon" th:href="@{/blog/images/favicon.ico}" type="image/ico">
 <meta name="keywords" content="blog" />
 <meta name="description" content="blog" />
@@ -36,7 +36,7 @@
         <!--单图-->
         <li th:each="blog : ${blogPageInfo.list}">
           <a th:href="@{blog/{id}(id=${blog.id})}" target="_blank"><h3 class="blogtitle">[[${blog.title}]]</h3></a>
-          <span class="blogpic imgscale"><i><a href="/" th:text="${blog.flag}"></a></i><a th:href="@{blog/{id}(id=${blog.id})}" target="_blank" title=""><img th:src="@{${blog.firstPicture}}" alt=""></a></span>
+          <span class="blogpic imgscale"><i><a href="/" th:text="${blog.flag} == 1 ? '原创' : '转载'"></a></i><a th:href="@{blog/{id}(id=${blog.id})}" target="_blank" title=""><img th:src="@{${blog.firstPicture}}" alt=""></a></span>
           <p class="blogtext" th:text="${blog.description}"></p>
           <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}" ></a>】</span></p>
           <a th:href="@{blog/{id}(id=${blog.id})}" class="viewmore">阅读更多</a>

@@ -194,8 +194,24 @@ public class BlogServiceImpl implements BlogService {
 	}
 
 	@Override
-	public Blog getBlogById(Long id) {
-		return blogMapper.getBlogById(id);
+	public Map<String,Object> getBlogById(Long id) {
+		Blog blog = blogMapper.getBlogById(id);
+		Map<String,Object> map = new HashMap<>();
+		if (blog != null) {
+			//前端回显标签转换
+			List<Long> ids = new ArrayList<>();
+			String tag = blog.getTagIds();
+			if (tag != null) {
+				String[] tagIds = tag.split(",");
+				ids = new ArrayList<>();
+				for (String s : tagIds) {
+					ids.add(Long.valueOf(s));
+				}
+			}
+			map.put("ids", ids);
+			map.put("blog", blog);
+		}
+		return map;
 	}
 
 	public Blog getBlogConvertDB(Long id) {
@@ -320,7 +336,7 @@ public class BlogServiceImpl implements BlogService {
 	public Integer getBlogViewsByBlogId(Long blogId) {
 		Integer view = (Integer) redisService.hmGet("blog_views::blog_views_id_" + blogId, String.valueOf(blogId));
 		if (view == null) {
-			Blog blog = this.getBlogById(blogId);
+			Blog blog = blogMapper.getBlogById(blogId);
 			if (blog == null) {
 				return null;
 			}

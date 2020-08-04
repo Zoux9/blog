@@ -17,8 +17,11 @@ import java.util.List;
 @RequestMapping("/admin")
 public class SysLogController {
 
-	@Autowired
-	private SysLogService sysLogService;
+	private final SysLogService sysLogService;
+
+	public SysLogController(SysLogService sysLogService) {
+		this.sysLogService = sysLogService;
+	}
 
 	/**
 	 * 查询所有日志

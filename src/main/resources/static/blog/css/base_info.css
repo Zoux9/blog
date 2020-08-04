@@ -522,7 +522,8 @@ p.downurl-zhuce a { color: #1487f4; font-size: 18px; padding: 0 10px; }
 .hotspot h2 { line-height: 22px; font-size: 16px; color: #373d41; height: 22px; margin-top: 10px; }
 .hotspot p { line-height: 17px; font-size: 14px; color: #373d41; height: 17px; margin-top: 12px; }
 .hotspot li a:hover { box-shadow: 0 2px 15px 0 rgba(0,0,0,.15); }
-
+.alert-success{color:#3c763d;background-color:#dff0d8;border-color:#d6e9c6}
+.alert{padding:15px;margin-bottom:20px;border:1px solid transparent;border-radius:4px}
 a.headad img {
     margin: auto;
 }

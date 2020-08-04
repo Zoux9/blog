@@ -1,5 +1,6 @@
 package com.zx.blog.controller.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zx.blog.annotation.SystemLog;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zouxu
@@ -27,14 +29,17 @@ import java.util.List;
 @RequestMapping("/admin")
 public class BlogController {
 
-	@Autowired
-	private BlogService blogService;
+	private final BlogService blogService;
 
-	@Autowired
-	private TypeService typeService;
+	private final TypeService typeService;
 
-	@Autowired
-	private TagService tagService;
+	private final TagService tagService;
+
+	public BlogController(BlogService blogService, TypeService typeService, TagService tagService) {
+		this.blogService = blogService;
+		this.typeService = typeService;
+		this.tagService = tagService;
+	}
 
 
 	/**
@@ -80,8 +85,9 @@ public class BlogController {
 		return "admin/blog_add";
 	}
 
+
 	@RequestMapping(value = "/blog/add", method = RequestMethod.POST)
-	public String save(@Valid Blog blog, BindingResult result, RedirectAttributes attributes) {
+	public String save(@Valid Blog blog, RedirectAttributes attributes) {
 		//设置分类
 		blog.setType(typeService.getTypeById(blog.getTypeId()));
 		//设置标签
@@ -120,32 +126,38 @@ public class BlogController {
 	 * @return
 	 */
 	@RequestMapping(value = "/blog/update/{id}", method = RequestMethod.GET)
-	public String getTagById(@PathVariable Long id, Model model) {
+	public String getBlogById(@PathVariable Long id, Model model) {
 		//中间表
 		setTypeAndTag(model);
 		//获取blog
-		Blog blog = blogService.getBlogById(id);
+		Map<String, Object> blog = blogService.getBlogById(id);
 		if (blog != null) {
 			model.addAttribute("message", "回显文章数据成功,请继续修改!");
 			model.addAttribute("success", true);
-			//前端回显标签转换
-			List<Long> ids = new ArrayList<>();
-			String tag = blog.getTagIds();
-			if (tag != null) {
-				String[] tagIds = tag.split(",");
-				ids = new ArrayList<>();
-				for (String s : tagIds) {
-					ids.add(Long.valueOf(s));
-				}
-			}
-			model.addAttribute("ids", ids);
-			model.addAttribute("blog", blog);
+
+			model.addAttribute("ids", blog.get("ids"));
+			model.addAttribute("blog", blog.get("blog"));
 		} else {
 			model.addAttribute("message", "回显文章数据失败,请尝试修改!");
 			model.addAttribute("success", false);
 		}
 
 		return "admin/blog_update";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/blog/query/{id}", method = RequestMethod.GET)
+	public JSONObject getBlogById(@PathVariable Long id) {
+		Map<String, Object> blogMap = blogService.getBlogById(id);
+		JSONObject jsonObject = new JSONObject();
+		if (blogMap == null){
+			return null;
+		}
+		Blog blog = (Blog) blogMap.get("blog");
+		jsonObject.put("flag",blog.getFlag());
+		jsonObject.put("type",blog.getType().getId());
+		jsonObject.put("tag",blogMap.get("ids"));
+		return jsonObject;
 	}
 
 	private void setTypeAndTag(Model model) {

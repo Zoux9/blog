@@ -21,8 +21,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/admin")
 public class AdminLinkController {
 
-	@Autowired
-	private LinkService linkService;
+	private final LinkService linkService;
+
+	public AdminLinkController(LinkService linkService) {
+		this.linkService = linkService;
+	}
 
 
 	/**

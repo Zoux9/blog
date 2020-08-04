@@ -36,7 +36,7 @@ public class BlogLinkController {
 	public String getShowLink(Model model) {
 		model.addAttribute("links", linkService.getShowLink());
 
-		return "blog/index :: typeSearch";
+		return "blog/index";
 	}
 
 

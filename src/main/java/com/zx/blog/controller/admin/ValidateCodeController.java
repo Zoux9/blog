@@ -15,8 +15,11 @@ import java.util.UUID;
 @RestController
 public class ValidateCodeController {
 
-	@Autowired
-	private RedisComponentUtils redisService;
+	private final RedisComponentUtils redisService;
+
+	public ValidateCodeController(RedisComponentUtils redisService) {
+		this.redisService = redisService;
+	}
 
 	@RequestMapping("/captcha")
 	public Map<String,String> captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {

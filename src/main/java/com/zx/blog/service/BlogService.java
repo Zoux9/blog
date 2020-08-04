@@ -5,6 +5,7 @@ import com.zx.blog.entity.Blog;
 import com.zx.blog.dto.SevenDaysDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author zouxu
@@ -16,12 +17,11 @@ public interface BlogService {
 
 	List<Blog> adminBlogInfo();
 
-
 	List<Blog> searchBlog(Blog query);
 
 	int deleteBlog(Long id);
 
-	Blog getBlogById(Long id);
+	Map<String,Object> getBlogById(Long id);
 
 	Blog getBlogConvert(Long id);
 

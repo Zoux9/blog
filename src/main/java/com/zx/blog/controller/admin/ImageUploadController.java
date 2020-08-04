@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,8 +30,8 @@ import java.util.Random;
 @RequestMapping("/admin")
 public class ImageUploadController {
 	@ResponseBody
-	@RequestMapping(value = "/imageUpload", method = RequestMethod.POST)
-	public List<JSONObject> hello(HttpServletRequest request, HttpServletResponse response,
+	@RequestMapping(value = "/imageUpload", method = RequestMethod.POST,headers="content-type=multipart/form-data")
+	public List<JSONObject> imageUpload(HttpServletRequest request, HttpServletResponse response,
 	                        @RequestParam(value = "images", required = false) MultipartFile[] images) {
 		List<JSONObject> jsonObjectList = new ArrayList<>();
 		try {
@@ -59,8 +61,8 @@ public class ImageUploadController {
 					//获取文件夹路径
 					path = path + File.separator + fileAdd + File.separator;
 					File file1 = new File(path);
-					//如果文件夹不存在则创建
 
+					//如果文件夹不存在则创建
 					if (!file1.exists() && !file1.isDirectory()) {
 						if (!file1.mkdirs()) {
 							throw new IOException("文件夹创建失败,路径为：" + file1);
@@ -80,14 +82,13 @@ public class ImageUploadController {
 
 					url = returnUrl + fileAdd + "/" + fileName;
 
-					// 下面response返回的json格式是editor.md所限制的，规范输出就OK
-
 					jsonObject.put("code", 1);
 					jsonObject.put("message", "图片上传成功");
 					jsonObject.put("url", url);
 					jsonObjectList.add(jsonObject);
 				}
 			}
+
 		} catch (Exception e) {
 			JSONObject jsonObject = new JSONObject();
 			jsonObject.put("code", 0);
@@ -96,4 +97,6 @@ public class ImageUploadController {
 		}
 		return jsonObjectList;
 	}
+
+
 }

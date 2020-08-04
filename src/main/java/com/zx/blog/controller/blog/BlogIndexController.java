@@ -73,13 +73,15 @@ public class BlogIndexController {
 		return "blog/list";
 	}
 
+	@ResponseBody
 	@RequestMapping(value = "/searchType/{typeId}", method = RequestMethod.GET)
-	public String searchType(@PathVariable Long typeId, Model model) {
+	public List<Blog> searchType(@PathVariable Long typeId, Model model) {
 
 		List<Blog> typeSearch = blogService.getBlogByTypeId(typeId);
 		model.addAttribute("typeBlog", typeSearch);
 
-		return "blog/index :: typeSearch";
+		return typeSearch;
+//		return "blog/index :: typeSearch";
 	}
 
 

@@ -1,5 +1,6 @@
 package com.zx.blog.controller.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zx.blog.entity.Tag;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,8 +26,11 @@ import java.util.List;
 @RequestMapping("/admin")
 public class TagController {
 
-	@Autowired
-	private TagService tagService;
+	private final TagService tagService;
+
+	public TagController(TagService tagService) {
+		this.tagService = tagService;
+	}
 
 
 	/**
@@ -48,6 +53,21 @@ public class TagController {
 		return "admin/tag";
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "/tagList", method = RequestMethod.GET)
+	public List<JSONObject> tagsPage() {
+		List<JSONObject> tagsJsonList = new ArrayList<>();
+		List<Tag> tagList = tagService.getListTag();
+
+		for (Tag tag : tagList) {
+			JSONObject jsonObject = new JSONObject();
+			jsonObject.put("name",tag.getName());
+			jsonObject.put("value",tag.getId());
+			tagsJsonList.add(jsonObject);
+		}
+
+		return tagsJsonList;
+	}
 
 	@RequestMapping(value = "/tag/add", method = RequestMethod.GET)
 	public String addTag(Model model) {

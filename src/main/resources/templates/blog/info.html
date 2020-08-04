@@ -2,15 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8">
-<title>文章内容页-zealously个人博客</title>
+<title>文章内容页-荔枝博客</title>
 <link rel="icon" th:href="@{/blog/images/favicon.ico}" type="image/ico">
 <meta name="keywords" content="blog" />
 <meta name="description" content="blog" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.css"><link th:href="@{/blog/css/github-markdown.css}" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.min.css@0.0.3/animate.min.css"><link th:href="@{/blog/css/m.css}" rel="stylesheet">
 <link th:href="@{/blog/css/base_info.css}" rel="stylesheet">
-<link th:href="@{/blog/css/m.css}" rel="stylesheet">
-<link th:href="@{/blog/css/tocbot.css}" rel="stylesheet">
-<link th:href="@{/blog/css/github-markdown.css}" rel="stylesheet" />
+
 <!--[endif]-->
   <style>
     .markdown-body {
@@ -41,10 +41,28 @@
       <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}"></a>】</span><span th:text="${blog.views} + 人已围观"></span></p>
       <p class="con_info"><b>简介:</b><span th:text="${blog.description}"></span></p>
       <div class="con_text toc-content" data-toc="#toc" th:utext="${blog.content}"></div>
-       <p><span class="diggit" th:if="${blog.appreciation}">很赞哦！ (未开通)</span></p>
 
+        <p><span class="diggit" th:if="${blog.appreciation}">很赞哦！ (未开通)</span></p>
     </div>
-    <div class="whitebg gbook">
+      <div th:if="${blog.shareStatement}" class="whitebg gbook">
+      <h2 class="htitle">版权说明</h2>
+           <p>
+               版权属于:
+               <a href="https://www.zealx.top/">荔枝博客</a>
+           </p>
+           <p>
+               更新时间:
+               <a href="https://www.zealx.top/">[[${#dates.format(blog.updateTime,'yyyy-MM-dd')}]]</a>
+           </p>
+           <p>
+               原文地址:
+               <a th:href="@{/blog/{id}(id=${blog.id})}">[[${#httpServletRequest.getRequestURL()}]]</a>
+           </p>
+           <p>
+               转载时必须以链接形式注明原始出处及本声明。
+           </p>
+    </div>
+      <div class="whitebg gbook">
       <h2 class="htitle">文章评论</h2>
       <p>即将开通</p>
       <ul>
@@ -53,16 +71,15 @@
   </div>
   <!--lbox end-->
    <div class="rbox">
-
        <div th:fragment="sider-fragment">
            <div class="whitebg notice">
                <h2 class="htitle">网站公告</h2>
                <ul>
                    <li th:each="notice : ${session.blogNotice}"><a th:href="@{/blog/{id}(id=${notice.id})}">[[${notice.title}]]</a></li>
-
                </ul>
            </div>
            <div id="toc" class="whitebg paihang toc-auto">
+               <h2 class="htitle">目录</h2>
                <ol class="toc"></ol>
            </div>
        </div>
@@ -72,7 +89,7 @@
 <footer th:replace="blog/footer::footer-fragment"></footer>
 
 <script src="https://cdn.jsdelivr.net/gh/jquery/jquery@3.2.1/dist/jquery.min.js"></script>
-<script th:src="@{/blog/js/tocbot.js}" ></script>
+<script src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.js"></script>
 <script th:src="@{/blog/js/comm.js}"></script>
 <!--[if lt IE 9]-->
 <script th:src="@{/blog/js/modernizr.js}"></script>

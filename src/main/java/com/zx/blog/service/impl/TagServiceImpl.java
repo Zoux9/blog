@@ -35,12 +35,11 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public List<Tag> listTagByIds(String ids) {
-
 		List<Tag> list = new ArrayList<>();
 		if (!"".equals(ids) && ids != null){
 			String[] idsArray = ids.split(",");
 			for (int i = 0; i < idsArray.length; i++) {
-				Tag tag = tagMapper.getByTagId(Long.valueOf(idsArray[i]));
+				Tag tag = tagMapper.getByTagId(Long.parseLong(idsArray[i]));
 				list.add(tag);
 			}
 		}

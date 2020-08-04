@@ -22,17 +22,20 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminIndexController {
 
-	@Autowired
-	private BlogService blogService;
+	private final BlogService blogService;
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 
-	@Autowired
-	private TypeService typeService;
+	private final TypeService typeService;
 
-	@Autowired
-	private TagService tagService;
+	private final TagService tagService;
+
+	public AdminIndexController(BlogService blogService, UserService userService, TypeService typeService, TagService tagService) {
+		this.blogService = blogService;
+		this.userService = userService;
+		this.typeService = typeService;
+		this.tagService = tagService;
+	}
 
 	@RequestMapping(value = "/main", method = RequestMethod.GET)
 	public String adminIndex(Model model){

@@ -87,7 +87,7 @@
 
 
     <select id="getBlogById" parameterType="Long" resultMap="BlogInfo">
-        select b.id,b.first_picture,b.flag,b.title,b.content,b.views,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,b.headline,b.recommend,b.published,b.tag_ids,b.notice,b.carousel,u.nickname,u.avatar,t.id tid ,t.name  from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
+        select b.id,b.first_picture,b.flag,b.title,b.content,b.share_statement,b.views,b.update_time,b.comment,b.share_statement,b.appreciation,b.description,b.headline,b.recommend,b.published,b.tag_ids,b.notice,b.carousel,u.nickname,u.avatar,t.id tid ,t.name  from t_blog b, t_user u, t_type t where b.user_id = u.id and b.type_id = t.id
         and b.id = #{id}
     </select>
 

@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/admin")
 public class UserController {
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
 
 	/**
 	 * 后台登录页面

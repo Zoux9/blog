@@ -3,6 +3,7 @@ package com.zx.blog.dao;
 import com.zx.blog.entity.Blog;
 import com.zx.blog.entity.Tag;
 import com.zx.blog.entity.Type;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

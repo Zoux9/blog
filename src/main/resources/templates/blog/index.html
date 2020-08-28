@@ -37,11 +37,6 @@
             <li th:each="type,typeStatus : ${session.types}" th:onclick="refresh([[${type.id}]])"  th:value="*{type.id}" name="typeId">[[${type.name}]]</li>
           </ul>
         </div>
-        <div class="tab_buttons">
-          <ul>
-            <li></li>
-          </ul>
-        </div>
         <div class="newstab">
           <div>
             <div class="newsitem" >
@@ -82,6 +77,7 @@
       </div>
       <div class="pagelist">
         <a title="Total record">&nbsp;<b>[[${blogs.total}]]</b></a>&nbsp;&nbsp;&nbsp;
+        <a th:href="@{/index/(pageNum=1)}" th:if="${blogs.hasPreviousPage}" >首页</a>&nbsp;
         <a th:href="@{/index/(pageNum=${blogs.prePage})}" th:if="${blogs.hasPreviousPage}" >上一页</a>&nbsp;
         <b th:text="${blogs.pageNum}"><a th:href="@{/index/(pageNum=${blogs.nextPage})}" ></a></b>&nbsp;
         <a th:href="@{/index/(pageNum=${blogs.pageNum + 1})}" th:if="${blogs.hasNextPage}" >[[${blogs.pageNum + 1}]]</a>&nbsp;
@@ -114,7 +110,6 @@
           <li><b>标签统计</b>：[[${#arrays.length(session.tags) + ' 条'}]]</li>
           <li><b>文章评论</b>：未开通</li>
           <li><b>开源地址</b>：<a href="https://github.com/Zoux9/blog">GitHub</a></li>
-
           <!--<img th:src="@{/blog/images/wxgzh.jpg}" class="tongji_gzh">-->
         </ul>
       </div>
@@ -138,6 +133,7 @@
         });
 
         function refresh(typeId) {
+            $(".newspic,.newslist").html("");
             $("[name='typeId']").removeClass('newscurrent');
             $("[value='" + typeId + "']").addClass('newscurrent');
             let url = '/searchType/' + typeId;

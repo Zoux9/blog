@@ -9,12 +9,14 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
 	private final UserMapper userMapper;
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
 		User userInfo = userMapper.getUserByName(username);
 
 		if (userInfo != null) {
-			org.springframework.security.core.userdetails.User user =new org.springframework.security.core.userdetails.User(userInfo.getUsername(), userInfo.getPassword(), true, true, true, true, getAuthority());
+			org.springframework.security.core.userdetails.User user = new org.springframework.security.core.userdetails.User(userInfo.getUsername(), userInfo.getPassword(), true, true, true, true, getAuthority());
 
 			return user;
 		}

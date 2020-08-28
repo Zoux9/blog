@@ -30,7 +30,7 @@ import java.util.*;
  * @date 2020/3/22 20:38
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BlogServiceImpl implements BlogService {
 
 	private final BlogMapper blogMapper;
@@ -70,7 +70,7 @@ public class BlogServiceImpl implements BlogService {
 
 			//缓存分页
 			if (blog.isPublished()){
-				this.BlogPage(blog);
+				this.blogPage(blog);
 			}
 		} else {
 
@@ -106,7 +106,7 @@ public class BlogServiceImpl implements BlogService {
 					setBlogAndTag(blogInfo, count);
 					//加入缓存分页
 					if (blog.isPublished()){
-						this.BlogPage(blog);
+						this.blogPage(blog);
 					}
 					Thread.sleep(100);
 
@@ -130,10 +130,10 @@ public class BlogServiceImpl implements BlogService {
 	 * 分页
 	 * @param blog
 	 */
-	private void BlogPage(Blog blog) {
+	private void blogPage(Blog blog) {
 		Blog blogPage = blogMapper.getBlogById(blog.getId());
 		String hkey = blogPage.getId().toString();
-		redisService.setPage("blog", hkey, Double.valueOf(hkey), blogPage);
+		redisService.setPage("blog", hkey, Double.parseDouble(hkey), blogPage);
 
 		//首页分类缓存
 		String key = "blog_type::blog_type_id_" + blogPage.getType().getId();

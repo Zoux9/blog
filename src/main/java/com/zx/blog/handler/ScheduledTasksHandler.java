@@ -14,11 +14,15 @@ import java.util.Set;
 @Component
 public class ScheduledTasksHandler {
 
-    @Autowired
-    private RedisComponentUtils redisService;
+    private final RedisComponentUtils redisService;
 
-    @Autowired
-    private BlogMapper blogMapper;
+    private final BlogMapper blogMapper;
+
+    public ScheduledTasksHandler(RedisComponentUtils redisService, BlogMapper blogMapper) {
+        this.redisService = redisService;
+        this.blogMapper = blogMapper;
+    }
+
     /**
      * 同步文章访问量
      */

@@ -3,7 +3,7 @@ package com.zx.blog.controller.admin;
 import com.zx.blog.entity.User;
 import com.zx.blog.service.UserService;
 import com.zx.blog.exception.BlogException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zx.blog.util.ObjectUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.Map;
 
 
 @Controller
@@ -44,7 +46,9 @@ public class UserController {
 	@RequestMapping(value = {"/", "/index"}, method = RequestMethod.GET)
 	public String adminIndex(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		User user = userService.getUserByName(auth.getName());
+		String name = auth.getName();
+		Map<String, Object> userMap = ObjectUtil.getStringToMap(name);
+		User user = userService.getUserByName(String.valueOf(userMap.get("username")));
 		model.addAttribute("user", user);
 		return "admin/index";
 	}

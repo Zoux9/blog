@@ -38,10 +38,10 @@ public interface BlogService {
 
 	/**
 	 * 获得某篇文章的访问量
-	 * @param BlogId
-	 * @return
+	 * @param blogId
+	 * @returnb
 	 */
-	Integer getBlogViewsByBlogId(Long BlogId);
+	Integer getBlogViewsByBlogId(Long blogId);
 	/**
 	 * 首页头条
 	 * @return

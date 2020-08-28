@@ -18,7 +18,7 @@ import java.time.Duration;
 @EnableCaching
 public class RedisCacheAutoConfiguration {
     //过期时间1天
-    private Duration timeToLive = Duration.ofDays(1);
+    private final Duration timeToLive = Duration.ofDays(1);
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {

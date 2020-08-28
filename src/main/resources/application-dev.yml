@@ -21,7 +21,7 @@ spring:
       # 一个连接idle状态的最大时长（毫秒），超时则被释放（retired），默认:10分钟
       idle-timeout: 600000
       # 连接池名字
-      pool-name: DatebookHikariCP
+      pool-name: BlogHikariCP
       # 一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟 1800000ms，建议设置比数据库超时时长少60秒，参考MySQL wait_timeout参数（show variables like '%timeout%';） -->
       max-lifetime: 28740000
       connection-test-query: SELECT 1
@@ -43,7 +43,12 @@ logging:
     com.zx: debug
   file:
     path: log/blog-dev
-
+rsa:
+  key:
+    priKeyFile: static/rsa/rsa_private_key.pem
+    pubKeyFile: static/rsa/rsa_public_key.pem
+    expire: 30 #分钟
+    cooikeName: Blog_Token
 # mybatis config
 mybatis:
   mapper-locations: classpath*:/mapper/**Mapper.xml

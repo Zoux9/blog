@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2020/3/20 20:26
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class TypeServiceImpl implements TypeService {
 
 	private final TypeMapper typeMapper;

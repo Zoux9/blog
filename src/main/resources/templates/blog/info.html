@@ -7,8 +7,10 @@
 <meta name="keywords" content="blog" />
 <meta name="description" content="blog" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.css"><link th:href="@{/blog/css/github-markdown.css}" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.min.css@0.0.3/animate.min.css"><link th:href="@{/blog/css/m.css}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.css">
+<link th:href="@{/blog/css/m.css}" rel="stylesheet">
 <link th:href="@{/blog/css/base_info.css}" rel="stylesheet">
 
 <!--[endif]-->
@@ -36,12 +38,10 @@
   <!--lbox begin-->
   <div class="lbox" >
     <div class="markdown-body whitebg animated fadeIn" >
-
       <h1 class="con_tilte" th:text="${blog.title}">个人博客，属于我的小世界！</h1>
       <p class="bloginfo"><i class="avatar"><img th:src="@{${blog.user.avatar}}"></i><span th:text="${blog.user.nickname}"></span><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><span>【<a href="/" th:text="${blog.type.name}"></a>】</span><span th:text="${blog.views} + 人已围观"></span></p>
       <p class="con_info"><b>简介:</b><span th:text="${blog.description}"></span></p>
       <div class="con_text toc-content" data-toc="#toc" th:utext="${blog.content}"></div>
-
         <p><span class="diggit" th:if="${blog.appreciation}">很赞哦！ (未开通)</span></p>
     </div>
       <div th:if="${blog.shareStatement}" class="whitebg gbook">

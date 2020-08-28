@@ -1,56 +1,56 @@
 package com.zx.blog.config;
 
-import com.zx.blog.filter.ValidateCodeFilter;
+import com.zx.blog.filter.JwtAuthenticationFilter;
+import com.zx.blog.filter.JwtVerifyFilter;
 import com.zx.blog.handler.MyAuthenticationFailureHandler;
-import com.zx.blog.handler.MyAuthenticationSuccessHandler;
 import com.zx.blog.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zx.blog.util.RedisComponentUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class BrowerSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
 
-	@Autowired
-	private ValidateCodeFilter validateCodeFilter;
+	private final MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
-	@Autowired
-	private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+	private final RsaKeyProperties rsaKeyProperties;
 
-	@Autowired
-	private MyAuthenticationSuccessHandler myAuthenticationSuccessHandler;
+	private final RedisComponentUtils redisComponentUtils;
+
+	public BrowerSecurityConfig(UserService userService, MyAuthenticationFailureHandler myAuthenticationFailureHandler, RsaKeyProperties rsaKeyProperties, RedisComponentUtils redisComponentUtils) {
+		this.userService = userService;
+		this.myAuthenticationFailureHandler = myAuthenticationFailureHandler;
+		this.rsaKeyProperties = rsaKeyProperties;
+		this.redisComponentUtils = redisComponentUtils;
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class);
-		http.authorizeRequests()
+		http.cors().and().csrf().disable().authorizeRequests()
 				// 所有用户均可访问的资源
-				.antMatchers("/**/css/**","/**/fonts/**", "/**/js/**", "/**/images/**", "/**/lib/**").permitAll()
+				.antMatchers("/**/css/**", "/**/fonts/**", "/**/js/**", "/**/images/**", "/**/lib/**").permitAll()
+				// 指定路径下的资源需要验证了的用户才能访问
 				.antMatchers("/admin/**").authenticated()
 				.and()
-			 .formLogin()
+				.addFilter(new JwtAuthenticationFilter(redisComponentUtils, super.authenticationManagerBean(), rsaKeyProperties, myAuthenticationFailureHandler))
+				.addFilter(new JwtVerifyFilter(super.authenticationManagerBean(),rsaKeyProperties))
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.formLogin()
 				// 指定登录页面,授予所有用户访问登录页面
 				.loginPage("/admin/login")
-				.successHandler(myAuthenticationSuccessHandler)
-				.failureHandler(myAuthenticationFailureHandler)
 				.and()
-				.csrf().disable()
-			 .logout()
-				.logoutSuccessUrl("/admin/login")
-				.permitAll().
-				and()
-			 .headers()
-				.frameOptions()
-				.disable();
+				.logout()
+				.logoutSuccessUrl("/admin/login").permitAll()
+				.and()
+				// 防止web页面的Frame被拦截
+				.headers().frameOptions().disable();
 	}
-
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

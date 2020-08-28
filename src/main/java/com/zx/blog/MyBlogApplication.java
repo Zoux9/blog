@@ -1,5 +1,6 @@
 package com.zx.blog;
 
+import com.zx.blog.config.RsaKeyProperties;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
@@ -7,17 +8,42 @@ import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.filter.OrderedHiddenHttpMethodFilter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+/**
+ * @author zouxu
+ */
 @MapperScan("com.zx.blog.dao")
 @SpringBootApplication
 @EnableScheduling
+@EnableConfigurationProperties(RsaKeyProperties.class)
 public class MyBlogApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MyBlogApplication.class, args);
+	}
+
+	@Bean
+	public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+		return new OrderedHiddenHttpMethodFilter(){
+			@Override
+			protected void doFilterInternal(@NonNull HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+					throws ServletException, IOException {
+				filterChain.doFilter(request, response);
+			}
+		};
 	}
 
 //	/**

@@ -29,7 +29,7 @@
         }
 
         .login-center {
-            background: #fff;
+            background: #ffffff;
             min-width: 29.25rem;
             padding: 2.14286em 3.57143em;
             border-radius: 5px;
@@ -74,7 +74,7 @@
             <div class="login-header text-center">
                 <a href="index.html"> <img alt="light year admin" th:src="@{/admin/images/logo-sidebar.png}"> </a>
             </div>
-            <form id="login" th:method="post" th:action="@{/admin/login}">
+            <form id="login" th:method="post">
                 <div class="form-group has-feedback feedback-left">
                     <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username"/>
                     <span class="mdi mdi-account form-control-feedback" aria-hidden="true"></span>
@@ -94,7 +94,6 @@
                              style="cursor: pointer;" onclick="verifyCode();" title="点击刷新"
                              alt="captcha">
                         <input type="hidden" id="cKey" name="cKey">
-
                     </div>
                 </div>
                 <div class="col-sm-12 text-center">
@@ -131,15 +130,21 @@
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: "/admin/login",
-            data: $('#login').serialize(),
+            url: "/auth/login",
+            async: false,
+            data: JSON.stringify({
+                username: $("#username").val(),
+                password: $("#password").val(),
+                captcha: $("[name ='captcha']").val(),
+                cKey: $("#cKey").val(),
+            }),
             success: function (result) {
-                if (result.message === true) {
+                if (result.code === 200) {
                     location.href = "/admin/index";
                 } else {
                     $('#error').html(result.error);
                 }
-            }
+            },
         });
     }
 </script>

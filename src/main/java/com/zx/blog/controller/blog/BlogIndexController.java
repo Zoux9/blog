@@ -1,5 +1,6 @@
 package com.zx.blog.controller.blog;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zx.blog.annotation.SystemLog;
@@ -69,19 +70,13 @@ public class BlogIndexController {
 	public String getListBlog(@RequestParam(defaultValue = "1", value = "pageNum") Integer pageNum, @RequestParam(defaultValue = "4", value = "pageSize") Integer pageSize,
 	                          Model model) {
 		model.addAttribute("listBlogPage", blogService.getListBlog(pageNum,pageSize));
-
 		return "blog/list";
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/searchType/{typeId}", method = RequestMethod.GET)
-	public List<Blog> searchType(@PathVariable Long typeId, Model model) {
-
-		List<Blog> typeSearch = blogService.getBlogByTypeId(typeId);
-		model.addAttribute("typeBlog", typeSearch);
-
-		return typeSearch;
-//		return "blog/index :: typeSearch";
+	public List<Blog> searchType(@PathVariable Long typeId) {
+		return blogService.getBlogByTypeId(typeId);
 	}
 
 

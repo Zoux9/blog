@@ -148,7 +148,8 @@ public class BlogServiceImpl implements BlogService {
 	private void setBlogAndTag(Blog blog, Integer count) {
 		List<Tag> tags = blog.getTags();
 		for (Tag tag : tags) {
-			Map<String, Long> map = new HashMap<>(3); // 2 / 0.75 + 1
+			//2 / 0.75 + 1
+			Map<String, Long> map = new HashMap<>(3);
 			map.put("tagId", tag.getId());
 			map.put("blogId", blog.getId());
 			blogMapper.saveBlogAndTag(map);

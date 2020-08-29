@@ -8,7 +8,7 @@
         <result property="requestUrl" column="request_url"/>
         <result property="requestType" column="request_type"/>
         <result property="requestParam" column="request_param"/>
-        <result property="username" column="create_time"/>
+        <result property="username" column="username"/>
         <result property="requestUrl" column="request_url"/>
         <result property="ip" column="ip"/>
         <result property="costTime" column="ip"/>

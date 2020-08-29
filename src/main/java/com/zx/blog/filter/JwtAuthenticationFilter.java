@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -64,7 +63,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			// 获取登录的信息
 			InputStream is = request.getInputStream();
 			String reqJson = IOUtils.toString(is, StandardCharsets.UTF_8);
-			log.info(reqJson);
 			if (!"".equals(reqJson)) {
 				log.info("开始获取登陆表单信息");
 				LoginRequest user = objectMapper.readValue(reqJson, LoginRequest.class);

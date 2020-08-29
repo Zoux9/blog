@@ -45,7 +45,7 @@ public class MyBlogApplication {
 			}
 		};
 	}
-
+//
 //	/**
 //	 * http重定向到https
 //	 *

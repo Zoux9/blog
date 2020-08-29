@@ -3,6 +3,7 @@ package com.zx.blog.aspect;
 
 import com.zx.blog.annotation.SystemLog;
 import com.zx.blog.entity.SysLog;
+import com.zx.blog.entity.User;
 import com.zx.blog.service.SysLogService;
 import com.zx.blog.service.UserService;
 import com.zx.blog.util.IpInfoUtil;
@@ -87,7 +88,9 @@ public class SysLogAop {
 
 			//请求用户
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			log.setUsername(auth.getName());
+			String name = auth.getName();
+			Map<String, Object> userMap = ObjectUtil.getStringToMap(name);
+			log.setUsername(String.valueOf(userMap.get("username")));
 			//日志标题
 			log.setName(description);
 			//日志请求url

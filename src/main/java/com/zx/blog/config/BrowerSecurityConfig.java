@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+/**
+ * @author zouxu
+ */
 @Configuration
 public class BrowerSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -40,7 +42,6 @@ public class BrowerSecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				.addFilter(new JwtAuthenticationFilter(redisComponentUtils, super.authenticationManagerBean(), rsaKeyProperties, myAuthenticationFailureHandler))
 				.addFilter(new JwtVerifyFilter(super.authenticationManagerBean(),rsaKeyProperties))
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.formLogin()
 				// 指定登录页面,授予所有用户访问登录页面
 				.loginPage("/admin/login")

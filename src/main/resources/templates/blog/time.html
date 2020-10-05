@@ -23,7 +23,7 @@
     <div class="whitebg timebox">
         <h2 class="htitle">往期文章</h2>
         <ul id="list" style="display:none;">
-            <li th:each="blog : ${timeBlog}"><span th:text="${#dates.format(blog.updateTime,'yyyy-MM-dd')}"></span><i><a
+            <li th:each="blog : ${timeBlog}"><span th:text="${#dates.format(blog.createTime,'yyyy-MM-dd')}"></span><i><a
                     th:href="@{/blog/{id}(id=${blog.id})}" target="_blank">[[${blog.title}]]</a></i></li>
         </ul>
         <ul id="list2">

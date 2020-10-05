@@ -3,6 +3,7 @@ package com.zx.blog.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.CharStreams;
 import com.zx.blog.config.RsaKeyProperties;
+import com.zx.blog.constants.SecurityConstants;
 import com.zx.blog.dto.LoginRequest;
 import com.zx.blog.exception.ValidateCodeException;
 import com.zx.blog.handler.MyAuthenticationFailureHandler;
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		this.authenticationManager = authenticationManager;
 		this.rsaKeyProperties = rsaKeyProperties;
 		this.myAuthenticationFailureHandler = myAuthenticationFailureHandler;
-		super.setFilterProcessesUrl("/auth/login");
+		super.setFilterProcessesUrl(SecurityConstants.AUTH_LOGIN_URL);
 	}
 
 	@Override

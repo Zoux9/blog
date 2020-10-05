@@ -12,6 +12,11 @@ public class SecurityConstants {
     public static final String AUTH_LOGIN_URL = "/auth/login";
 
     /**
+     * 匿名用户
+     */
+    public static final String ANONYMOUS_USER = "anonymousUser";
+
+    /**
      * 角色的key
      **/
     public static final String ROLE_CLAIMS = "rol";

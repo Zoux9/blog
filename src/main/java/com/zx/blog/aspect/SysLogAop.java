@@ -2,10 +2,9 @@ package com.zx.blog.aspect;
 
 
 import com.zx.blog.annotation.SystemLog;
+import com.zx.blog.constants.SecurityConstants;
 import com.zx.blog.entity.SysLog;
-import com.zx.blog.entity.User;
 import com.zx.blog.service.SysLogService;
-import com.zx.blog.service.UserService;
 import com.zx.blog.util.IpInfoUtil;
 import com.zx.blog.util.ObjectUtil;
 import com.zx.blog.util.ThreadPoolUtil;
@@ -36,17 +35,17 @@ public class SysLogAop {
 
 	private static final ThreadLocal<Date> BEGIN_TIME_THREAD_LOCAL = new NamedThreadLocal<>("ThreadLocal beginTime");
 
-	@Autowired
-	private SysLogService sysLogService;
+	private final SysLogService sysLogService;
 
-	@Autowired
-	private UserService userService;
+	private final IpInfoUtil ipInfoUtil;
 
-	@Autowired
-	private IpInfoUtil ipInfoUtil;
+	private final HttpServletRequest request;
 
-	@Autowired(required = false)
-	private HttpServletRequest request;
+	public SysLogAop(SysLogService sysLogService, IpInfoUtil ipInfoUtil, HttpServletRequest request) {
+		this.sysLogService = sysLogService;
+		this.ipInfoUtil = ipInfoUtil;
+		this.request = request;
+	}
 
 	/**
 	 * Controller层切点,注解方式
@@ -80,7 +79,6 @@ public class SysLogAop {
 	@AfterReturning("controllerAspect()")
 	public void after(JoinPoint joinPoint) {
 		try {
-			String username = "";
 			String description = getControllerMethodInfo(joinPoint).get("description").toString();
 			Map<String, String[]> requestParams = request.getParameterMap();
 
@@ -89,8 +87,14 @@ public class SysLogAop {
 			//请求用户
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			String name = auth.getName();
-			Map<String, Object> userMap = ObjectUtil.getStringToMap(name);
-			log.setUsername(String.valueOf(userMap.get("username")));
+			//非匿名用户
+			if (!name.equals(SecurityConstants.ANONYMOUS_USER)) {
+				Map<String, Object> userMap = ObjectUtil.getStringToMap(name);
+				log.setUsername(String.valueOf(userMap.get("username")));
+			} else {
+				//匿名用户
+				log.setUsername(name);
+			}
 			//日志标题
 			log.setName(description);
 			//日志请求url
@@ -129,8 +133,8 @@ public class SysLogAop {
 	 */
 	private static class SaveSystemLogThread implements Runnable {
 
-		private SysLog sysLog;
-		private SysLogService sysLogService;
+		private final SysLog sysLog;
+		private final SysLogService sysLogService;
 
 		public SaveSystemLogThread(SysLog sysLog, SysLogService sysLogService) {
 			this.sysLog = sysLog;
